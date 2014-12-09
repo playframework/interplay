@@ -1,5 +1,5 @@
                name := "interplay"
-            version := "0.1-SNAPSHOT"
+            version := "0.1.0"
        organization := "com.typesafe.play"
 
 libraryDependencies += "com.typesafe" % "config" % "1.2.1"
