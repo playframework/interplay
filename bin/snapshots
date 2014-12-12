@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+# Deploy script for nightly snapshots.
+#
+# Expects to be run against a directory with checked out repositories for:
+#
+#   - playframework
+#   - anorm
+#   - play-ebean
+#   - play-slick
+#   - twirl
+#   - omnidoc
+#   - play-generated-docs
+
+set -e
+
+# process arguments
+
+unset DEPLOY
+declare BRANCH="master"
+declare -a args
+
+while [[ $# -gt 0 ]] ; do
+  case "$1" in
+    -b|--branch) branch=$2; shift 2 ;;
+    *) args=("${args[@]}" "$1"); shift ;;
+  esac
+done
+set -- "${args[@]}"
+
+DEPLOY=$1
+
+if [ -z "$DEPLOY" ] ; then
+  DEPLOY=$(pwd)
+fi
+
+# checkout out a clean version of a branch
+function checkout {
+  local dir=$1
+  local branch=$2
+  echo "Checking out $dir ($branch)"
+  cd $dir
+  git fetch
+  git checkout $branch
+  git reset --hard origin/$branch
+  git clean -fxd
+}
+
+# detect play base version
+function play_base_version {
+  echo $(cat build | grep "PLAY_VERSION=" | sed 's/.*PLAY_VERSION="\(.*\)-SNAPSHOT"/\1/')
+}
+
+# detect base version from version.sbt
+function base_version {
+  echo $(cat version.sbt | sed 's/version in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
+}
+
+# create a timestamped and git hashed version
+function stamped {
+  local get_version=$1
+  local project=$2
+  cd $DEPLOY/$project
+  local base=$($get_version)
+  local today=$(date +"%Y-%m-%d")
+  local sha=$(git log --pretty=format:'%h' -n 1)
+  echo "${base}-${today}-${sha}-SNAPSHOT"
+}
+
+# versioned sbt build for play modules
+function build {
+  local version=$1
+  shift
+  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
+}
+
+# run the snapshot builds
+
+PLAY_VERSION=$(stamped play_base_version playframework/framework)
+ANORM_VERSION=$(stamped base_version anorm)
+PLAY_EBEAN_VERSION=$(stamped base_version play-ebean)
+PLAY_SLICK_VERSION=$(stamped base_version play-slick)
+TWIRL_VERSION=$(stamped base_version twirl)
+
+echo --- Building snapshots
+echo
+echo "        play: $PLAY_VERSION"
+echo "       anorm: $ANORM_VERSION"
+echo "  play-ebean: $PLAY_EBEAN_VERSION"
+echo "  play-slick: $PLAY_SLICK_VERSION"
+echo "       twirl: $TWIRL_VERSION"
+echo "     omnidoc: $PLAY_VERSION"
+
+export PLAY_VERSION
+pushd $DEPLOY
+
+echo
+echo --- play $PLAY_VERSION
+echo
+
+checkout $DEPLOY/playframework/framework $BRANCH
+./build publish && ./build -Dscala.version=2.11.1 publish
+
+echo
+echo --- anorm $ANORM_VERSION
+echo
+
+checkout $DEPLOY/anorm $BRANCH
+build $ANORM_VERSION +publish
+
+echo
+echo --- play-ebean $PLAY_EBEAN_VERSION
+echo
+
+checkout $DEPLOY/play-ebean $BRANCH
+build $PLAY_EBEAN_VERSION +publish plugin/publish
+
+echo
+echo --- play-slick $PLAY_SLICK_VERSION
+echo
+
+checkout $DEPLOY/play-slick $BRANCH
+build $PLAY_SLICK_VERSION +publish
+
+echo
+echo --- twirl $TWIRL_VERSION
+echo
+
+checkout $DEPLOY/twirl $BRANCH
+build $TWIRL_VERSION +publish plugin/publish
+
+echo
+echo --- omnidoc $PLAY_VERSION
+echo
+
+versions=""
+versions="$versions -Dplay.version=$PLAY_VERSION"
+versions="$versions -Danorm.version=$ANORM_VERSION"
+versions="$versions -Dplay-ebean.version=$PLAY_EBEAN_VERSION"
+versions="$versions -Dplay-slick.version=$PLAY_SLICK_VERSION"
+versions="$versions -Dtwirl.version=$TWIRL_VERSION"
+
+checkout $DEPLOY/omnidoc $BRANCH
+sbt $versions +publish
+
+echo
+echo --- play-generated-docs
+echo
+
+$DEPLOY/omnidoc/bin/deploy --branch $BRANCH $DEPLOY/play-generated-docs
+
+# cleanup
+
+popd
+unset PLAY_VERSION
