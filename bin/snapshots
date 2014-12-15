@@ -59,8 +59,6 @@ function base_version {
 # create a timestamped and git hashed version
 function stamped {
   local get_version=$1
-  local project=$2
-  cd $DEPLOY/$project
   local base=$($get_version)
   local today=$(date +"%Y-%m-%d")
   local sha=$(git log --pretty=format:'%h' -n 1)
@@ -74,14 +72,30 @@ function build {
   sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
 }
 
-# run the snapshot builds
+# checkout branches and extract versions
 
-PLAY_VERSION=$(stamped play_base_version playframework/framework)
-ANORM_VERSION=$(stamped base_version anorm)
-PLAY_EBEAN_VERSION=$(stamped base_version play-ebean)
-PLAY_SLICK_VERSION=$(stamped base_version play-slick)
-TWIRL_VERSION=$(stamped base_version twirl)
+echo "Checking out branches and extracting versions..."
 
+pushd $DEPLOY
+
+checkout $DEPLOY/playframework/framework $BRANCH
+PLAY_VERSION=$(stamped play_base_version)
+
+checkout $DEPLOY/anorm $BRANCH
+ANORM_VERSION=$(stamped base_version)
+
+checkout $DEPLOY/play-ebean $BRANCH
+PLAY_EBEAN_VERSION=$(stamped base_version)
+
+checkout $DEPLOY/play-slick $BRANCH
+PLAY_SLICK_VERSION=$(stamped base_version)
+
+checkout $DEPLOY/twirl $BRANCH
+TWIRL_VERSION=$(stamped base_version)
+
+# build and publish snapshots
+
+echo
 echo --- Building snapshots
 echo
 echo "        play: $PLAY_VERSION"
@@ -92,41 +106,40 @@ echo "       twirl: $TWIRL_VERSION"
 echo "     omnidoc: $PLAY_VERSION"
 
 export PLAY_VERSION
-pushd $DEPLOY
 
 echo
 echo --- play $PLAY_VERSION
 echo
 
-checkout $DEPLOY/playframework/framework $BRANCH
+cd $DEPLOY/playframework/framework
 ./build publish && ./build -Dscala.version=2.11.1 publish
 
 echo
 echo --- anorm $ANORM_VERSION
 echo
 
-checkout $DEPLOY/anorm $BRANCH
+cd $DEPLOY/anorm
 build $ANORM_VERSION +publish
 
 echo
 echo --- play-ebean $PLAY_EBEAN_VERSION
 echo
 
-checkout $DEPLOY/play-ebean $BRANCH
+cd $DEPLOY/play-ebean
 build $PLAY_EBEAN_VERSION +publish plugin/publish
 
 echo
 echo --- play-slick $PLAY_SLICK_VERSION
 echo
 
-checkout $DEPLOY/play-slick $BRANCH
+cd $DEPLOY/play-slick
 build $PLAY_SLICK_VERSION +publish
 
 echo
 echo --- twirl $TWIRL_VERSION
 echo
 
-checkout $DEPLOY/twirl $BRANCH
+cd $DEPLOY/twirl
 build $TWIRL_VERSION +publish plugin/publish
 
 echo
