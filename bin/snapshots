@@ -140,7 +140,7 @@ echo --- twirl $TWIRL_VERSION
 echo
 
 cd $DEPLOY/twirl
-build $TWIRL_VERSION +publish plugin/publish
+build $TWIRL_VERSION ++2.11.1 publish ++2.10.4 publish plugin/publish
 
 echo
 echo --- omnidoc $PLAY_VERSION
