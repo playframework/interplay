@@ -48,7 +48,7 @@ function checkout {
 
 # detect play base version
 function play_base_version {
-  echo $(cat build | grep "PLAY_VERSION=" | sed 's/.*PLAY_VERSION="\(.*\)-SNAPSHOT"/\1/')
+  echo $(cat version.sbt | sed 's/Release.branchVersion in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
 }
 
 # detect base version from version.sbt
@@ -112,7 +112,8 @@ echo --- play $PLAY_VERSION
 echo
 
 cd $DEPLOY/playframework/framework
-./build publish && ./build -Dscala.version=2.11.1 publish
+git tag $PLAY_VERSION -a -m "Building $PLAY_VERSION"
+./build +publish
 
 echo
 echo --- anorm $ANORM_VERSION
