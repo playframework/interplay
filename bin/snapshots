@@ -62,14 +62,14 @@ function stamped {
   local base=$($get_version)
   local today=$(date +"%Y-%m-%d")
   local sha=$(git log --pretty=format:'%h' -n 1)
-  echo "${base}-${today}-${sha}-SNAPSHOT"
+  echo "${base}-${today}-${sha}"
 }
 
 # versioned sbt build for play modules
 function build {
   local version=$1
   shift
-  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
+  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "set isSnapshot in ThisBuild := true" "$@"
 }
 
 # checkout branches and extract versions
@@ -113,7 +113,7 @@ echo
 
 cd $DEPLOY/playframework/framework
 git tag $PLAY_VERSION -a -m "Building $PLAY_VERSION"
-./build +publish
+./build "set isSnapshot in ThisBuild := true" +publish
 
 echo
 echo --- anorm $ANORM_VERSION
