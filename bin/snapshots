@@ -163,6 +163,25 @@ echo
 
 $DEPLOY/omnidoc/bin/deploy --branch $BRANCH $DEPLOY/play-generated-docs
 
+echo
+echo --- nightly status update
+echo
+
+mkdir -p ~/.interplay/$BRANCH
+cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
+{
+  "date": "$(date +"%Y-%m-%d")",
+  "branch": "master",
+  "versions": {
+    "play": "$PLAY_VERSION",
+    "anorm": "$ANORM_VERSION",
+    "play-ebean": "$PLAY_EBEAN_VERSION",
+    "play-slick": "$PLAY_SLICK_VERSION",
+    "twirl": "$TWIRL_VERSION"
+  }
+}
+STATUSJSON
+
 # cleanup
 
 popd
