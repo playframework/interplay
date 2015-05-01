@@ -144,6 +144,27 @@ cd $DEPLOY/twirl
 build $TWIRL_VERSION ++2.11.1 publish ++2.10.4 publish plugin/publish
 
 echo
+echo --- nightly status update
+echo
+
+# This gets done before omnidoc because SNAPSHOT versions don't depend on omnidoc by default, so it's better to
+# publish the most recent build success regardless of whether omnidoc passes or fails
+mkdir -p ~/.interplay/$BRANCH
+cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
+{
+  "date": "$(date +"%Y-%m-%d")",
+  "branch": "master",
+  "versions": {
+    "play": "$PLAY_VERSION",
+    "anorm": "$ANORM_VERSION",
+    "play-ebean": "$PLAY_EBEAN_VERSION",
+    "play-slick": "$PLAY_SLICK_VERSION",
+    "twirl": "$TWIRL_VERSION"
+  }
+}
+STATUSJSON
+
+echo
 echo --- omnidoc $PLAY_VERSION
 echo
 
@@ -163,24 +184,6 @@ echo
 
 $DEPLOY/omnidoc/bin/deploy --branch $BRANCH $DEPLOY/play-generated-docs
 
-echo
-echo --- nightly status update
-echo
-
-mkdir -p ~/.interplay/$BRANCH
-cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
-{
-  "date": "$(date +"%Y-%m-%d")",
-  "branch": "master",
-  "versions": {
-    "play": "$PLAY_VERSION",
-    "anorm": "$ANORM_VERSION",
-    "play-ebean": "$PLAY_EBEAN_VERSION",
-    "play-slick": "$PLAY_SLICK_VERSION",
-    "twirl": "$TWIRL_VERSION"
-  }
-}
-STATUSJSON
 
 # cleanup
 
