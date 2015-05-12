@@ -1,14 +1,17 @@
-               name := "interplay"
-            version := "0.1-SNAPSHOT"
-       organization := "com.typesafe.play"
+import buildinfo.BuildInfo._
 
-libraryDependencies += "com.typesafe" % "config" % "1.2.1"
+lazy val interplay = (project in file("."))
+  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
 
-          sbtPlugin := true
-  publishMavenStyle := false
-          publishTo := sbtPluginRepos.value
+description := "Base build plugin for all Play modules"
 
-def sbtPluginRepos = Def.setting {
-  if (isSnapshot.value) Some(Classpaths.sbtPluginSnapshots)
-  else Some(Classpaths.sbtPluginReleases)
-}
+addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
+addSbtPlugin("me.lessis" % "bintray-sbt" % bintraySbtVersion)
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
+libraryDependencies ++= Seq(
+  "org.scala-sbt" % "scripted-plugin" % scriptedPluginVersion,
+  "com.typesafe" % "config" % configVersion
+)
+
+playBuildRepoName in ThisBuild := "interplay"

@@ -5,32 +5,28 @@ import sbt.Keys._
 
 object Playdoc extends AutoPlugin {
 
-  object Import {
-    object PlaydocKeys {
-      val playdocDirectory = settingKey[File]("Base directory of play documentation")
-      val packagePlaydoc = taskKey[File]("Package play documentation")
-    }
+  object autoImport {
+    val playdocDirectory = settingKey[File]("Base directory of play documentation")
+    val playdocPackage = taskKey[File]("Package play documentation")
   }
 
-  val autoImport = Import
-
+  import autoImport._
+  
   override def requires = sbt.plugins.JvmPlugin
 
   override def trigger = noTrigger
 
-  import Import.PlaydocKeys._
-
   override def projectSettings =
-    Defaults.packageTaskSettings(packagePlaydoc, mappings in packagePlaydoc) ++
+    Defaults.packageTaskSettings(playdocPackage, mappings in playdocPackage) ++
     Seq(
       playdocDirectory := (baseDirectory in ThisBuild).value / "docs" / "manual",
-      mappings in packagePlaydoc := {
+      mappings in playdocPackage := {
         val base = playdocDirectory.value
         base.***.get pair relativeTo(base.getParentFile)
       },
-      artifactClassifier in packagePlaydoc := Some("playdoc"),
-      artifact in packagePlaydoc ~= { _.copy(configurations = Seq(Docs)) }
+      artifactClassifier in playdocPackage := Some("playdoc"),
+      artifact in playdocPackage ~= { _.copy(configurations = Seq(Docs)) }
     ) ++
-    addArtifact(artifact in packagePlaydoc, packagePlaydoc)
+    addArtifact(artifact in playdocPackage, playdocPackage)
 
 }
