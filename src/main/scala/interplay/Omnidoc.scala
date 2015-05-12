@@ -6,17 +6,13 @@ import sbt.Package.ManifestAttributes
 
 object Omnidoc extends AutoPlugin {
 
-  object Import {
-    object OmnidocKeys {
-      val githubRepo = SettingKey[String]("omnidoc-github-repo", "Github repository for source URL")
-      val snapshotBranch = SettingKey[String]("omnidoc-snapshot-branch", "Git branch for development versions")
-      val tagPrefix = SettingKey[String]("omnidoc-tag-prefix", "Prefix before git tagged versions")
-      val pathPrefix = SettingKey[String]("omnidoc-path-prefix", "Prefix before source directory paths")
-      val sourceUrl = SettingKey[Option[String]]("omnidoc-source-url", "Source URL for scaladoc linking")
-    }
+  object autoImport {
+    lazy val omnidocGithubRepo = settingKey[String]("Github repository for source URL")
+    lazy val omnidocSnapshotBranch = settingKey[String]("Git branch for development versions")
+    lazy val omnidocTagPrefix = settingKey[String]("Prefix before git tagged versions")
+    lazy val omnidocPathPrefix = settingKey[String]("Prefix before source directory paths")
+    lazy val omnidocSourceUrl = settingKey[Option[String]]("Source URL for scaladoc linking")
   }
-
-  val autoImport = Import
 
   val SourceUrlKey = "Omnidoc-Source-URL"
 
@@ -24,19 +20,19 @@ object Omnidoc extends AutoPlugin {
 
   override def trigger = noTrigger
 
-  import Import.OmnidocKeys._
+  import autoImport._
 
   override def projectSettings = Seq(
-    sourceUrl := githubRepo.?.value map { repo =>
-      val development = (snapshotBranch ?? "master").value
-      val tagged = (tagPrefix ?? "v").value + version.value
+    omnidocSourceUrl := omnidocGithubRepo.?.value map { repo =>
+      val development = (omnidocSnapshotBranch ?? "master").value
+      val tagged = (omnidocTagPrefix ?? "v").value + version.value
       val tree = if (isSnapshot.value) development else tagged
-      val prefix = "/" + (pathPrefix ?? "").value
+      val prefix = "/" + (omnidocPathPrefix ?? "").value
       val directory = IO.relativize((baseDirectory in ThisBuild).value, baseDirectory.value)
       val path = directory.fold("")(prefix.+)
       s"https://github.com/${repo}/tree/${tree}${path}"
     },
-    packageOptions in (Compile, packageSrc) ++= sourceUrl.value.toSeq map { url =>
+    packageOptions in (Compile, packageSrc) ++= omnidocSourceUrl.value.toSeq map { url =>
       ManifestAttributes(SourceUrlKey -> url)
     }
   )
