@@ -14,4 +14,8 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % configVersion
 )
 
+playBuildExtraTests := {
+  scripted.toTask("").value
+}
+
 playBuildRepoName in ThisBuild := "interplay"
