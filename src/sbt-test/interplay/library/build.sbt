@@ -14,6 +14,28 @@ InputKey[Unit]("contains") := {
   }
 }
 
+TaskKey[Unit]("verifyOmnidocSourceUrl") := {
+  import java.util.jar.JarFile
+
+  val expected = "https://github.com/playframework/mock/tree/master"
+
+  val sourceUrl = omnidocSourceUrl.value
+  sourceUrl match {
+    case Some(`expected`) => ()
+    case other => throw sys.error(s"Expected $expected source url, got $other")
+  }
+
+  val srcZip = (packageSrc in Compile).value
+  val jarFile = new JarFile(srcZip)
+  val manifest = jarFile.getManifest.getMainAttributes
+
+  manifest.getValue(Omnidoc.SourceUrlKey) match {
+    case `expected` => ()
+    case other => throw sys.error(s"Expected $expected source url, got $other")
+  }
+  jarFile.close()
+}
+
 def common: Seq[Setting[_]] = Seq(
   PgpKeys.publishSigned := {
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")

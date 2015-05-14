@@ -149,7 +149,7 @@ object PlayLibraryBase extends AutoPlugin {
 
   override def projectSettings = Seq(
     playBuildPromoteSonatype in ThisBuild := true,
-    omnidocGithubRepo := s"playframework/${playBuildRepoName in ThisBuild}",
+    omnidocGithubRepo := s"playframework/${(playBuildRepoName in ThisBuild).value}",
     omnidocTagPrefix := "",
     javacOptions in compile := Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
