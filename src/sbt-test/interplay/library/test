@@ -26,3 +26,5 @@ $ exec git branch -u origin/master
 
 # Make sure the git repo was tagged
 $ exec git show 1.2.3
+
+> verifyOmnidocSourceUrl
