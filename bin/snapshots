@@ -18,11 +18,13 @@ set -e
 
 unset DEPLOY
 declare BRANCH="master"
+declare PUBLISH="publish"
 declare -a args
 
 while [[ $# -gt 0 ]] ; do
   case "$1" in
-    -b|--branch) branch=$2; shift 2 ;;
+    -b|--branch) BRANCH=$2; shift 2 ;;
+    -l|--local) PUBLISH="publishLocal"; shift ;;
     *) args=("${args[@]}" "$1"); shift ;;
   esac
 done
@@ -113,47 +115,50 @@ echo
 
 cd $DEPLOY/playframework/framework
 git tag $PLAY_VERSION -a -m "Building $PLAY_VERSION"
-./build +publish
+./build +$PUBLISH
 
 echo
 echo --- anorm $ANORM_VERSION
 echo
 
 cd $DEPLOY/anorm
-build $ANORM_VERSION +publish
+build $ANORM_VERSION +$PUBLISH
 
 echo
 echo --- play-ebean $PLAY_EBEAN_VERSION
 echo
 
 cd $DEPLOY/play-ebean
-build $PLAY_EBEAN_VERSION +publish plugin/publish
+build $PLAY_EBEAN_VERSION +$PUBLISH plugin/$PUBLISH
 
 echo
 echo --- play-slick $PLAY_SLICK_VERSION
 echo
 
 cd $DEPLOY/play-slick
-build $PLAY_SLICK_VERSION +publish
+build $PLAY_SLICK_VERSION +$PUBLISH
 
 echo
 echo --- twirl $TWIRL_VERSION
 echo
 
 cd $DEPLOY/twirl
-build $TWIRL_VERSION ++2.11.1 publish ++2.10.4 publish plugin/publish
+build $TWIRL_VERSION ++2.11.1 $PUBLISH ++2.10.4 $PUBLISH plugin/$PUBLISH
 
-echo
-echo --- nightly status update
-echo
+if [ "$PUBLISH" == "publish" ]
+then
 
-# This gets done before omnidoc because SNAPSHOT versions don't depend on omnidoc by default, so it's better to
-# publish the most recent build success regardless of whether omnidoc passes or fails
-mkdir -p ~/.interplay/$BRANCH
-cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
+    echo
+    echo --- nightly status update
+    echo
+
+    # This gets done before omnidoc because SNAPSHOT versions don't depend on omnidoc by default, so it's better to
+    # publish the most recent build success regardless of whether omnidoc passes or fails
+    mkdir -p ~/.interplay/$BRANCH
+    cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
 {
   "date": "$(date +"%Y-%m-%d")",
-  "branch": "master",
+  "branch": "$BRANCH",
   "versions": {
     "play": "$PLAY_VERSION",
     "anorm": "$ANORM_VERSION",
@@ -163,6 +168,8 @@ cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
   }
 }
 STATUSJSON
+
+fi
 
 echo
 echo --- omnidoc $PLAY_VERSION
@@ -176,7 +183,7 @@ versions="$versions -Dplay-slick.version=$PLAY_SLICK_VERSION"
 versions="$versions -Dtwirl.version=$TWIRL_VERSION"
 
 checkout $DEPLOY/omnidoc $BRANCH
-sbt $versions +publish
+sbt $versions +$PUBLISH
 
 echo
 echo --- play-generated-docs
