@@ -71,7 +71,8 @@ object PlayBuildBase extends AutoPlugin {
     homepage := Some(url(s"https://github.com/playframework/${(playBuildRepoName in ThisBuild).value}")),
     licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
 
-    scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings", "-unchecked", "-encoding", "utf8"),
+    scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
+    javacOptions ++= Seq("-encoding", "UTF-8", "-Xlint:-options"),
 
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
@@ -116,7 +117,6 @@ object PlaySbtPluginBase extends AutoPlugin {
 
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     ScriptedPlugin.scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" },
-    ScriptedPlugin.scriptedLaunchOpts += "-XX:MaxPermSize=256m",
     sbtPlugin := true,
 
     publishTo := {
@@ -128,8 +128,8 @@ object PlaySbtPluginBase extends AutoPlugin {
     publishMavenStyle := isSnapshot.value,
     playBuildPromoteBintray in ThisBuild := true,
 
-    (javacOptions in compile) := Seq("-source", "1.7", "-target", "1.7"),
-    (javacOptions in doc) := Seq("-source", "1.7")
+    (javacOptions in compile) ++= Seq("-source", "1.6", "-target", "1.6"),
+    (javacOptions in doc) := Seq("-source", "1.6")
   )
 }
 
@@ -151,7 +151,7 @@ object PlayLibraryBase extends AutoPlugin {
     playBuildPromoteSonatype in ThisBuild := true,
     omnidocGithubRepo := s"playframework/${(playBuildRepoName in ThisBuild).value}",
     omnidocTagPrefix := "",
-    javacOptions in compile := Seq("-source", "1.8", "-target", "1.8"),
+    javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
     crossScalaVersions := Seq("2.11.6", "2.10.5"),
     scalaVersion := sys.props.get("scala.version").getOrElse("2.10.5"),
@@ -173,8 +173,8 @@ object PlaySbtLibraryBase extends AutoPlugin {
 
   override def projectSettings = Seq(
     playBuildPromoteSonatype in ThisBuild := true,
-    (javacOptions in compile) := Seq("-source", "1.7", "-target", "1.7"),
-    (javacOptions in doc) := Seq("-source", "1.7")
+    (javacOptions in compile) := Seq("-source", "1.6", "-target", "1.6"),
+    (javacOptions in doc) := Seq("-source", "1.6")
   )
 }
 

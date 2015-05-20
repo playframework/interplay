@@ -46,11 +46,6 @@ function checkout {
   git clean -fxd
 }
 
-# detect play base version
-function play_base_version {
-  echo $(cat version.sbt | sed 's/Release.branchVersion in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
-}
-
 # detect base version from version.sbt
 function base_version {
   echo $(cat version.sbt | sed 's/version in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
@@ -69,7 +64,7 @@ function stamped {
 function build {
   local version=$1
   shift
-  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
+  sbt -Dplay.version=$PLAY_VERSION -Dtwirl.version=$TWIRL_VERSION "set version in ThisBuild := \"$version\"" "$@"
 }
 
 # checkout branches and extract versions
@@ -79,7 +74,7 @@ echo "Checking out branches and extracting versions..."
 pushd $DEPLOY
 
 checkout $DEPLOY/playframework/framework $BRANCH
-PLAY_VERSION=$(stamped play_base_version)
+PLAY_VERSION=$(stamped base_version)
 
 checkout $DEPLOY/anorm $BRANCH
 ANORM_VERSION=$(stamped base_version)
@@ -108,12 +103,18 @@ echo "     omnidoc: $PLAY_VERSION"
 export PLAY_VERSION
 
 echo
+echo --- twirl $TWIRL_VERSION
+echo
+
+cd $DEPLOY/twirl
+build $TWIRL_VERSION ++2.11.1 publish ++2.10.4 publish plugin/publish
+
+echo
 echo --- play $PLAY_VERSION
 echo
 
 cd $DEPLOY/playframework/framework
-git tag $PLAY_VERSION -a -m "Building $PLAY_VERSION"
-./build +publish
+build $PLAY_VERSION +publish
 
 echo
 echo --- anorm $ANORM_VERSION
@@ -135,13 +136,6 @@ echo
 
 cd $DEPLOY/play-slick
 build $PLAY_SLICK_VERSION +publish
-
-echo
-echo --- twirl $TWIRL_VERSION
-echo
-
-cd $DEPLOY/twirl
-build $TWIRL_VERSION ++2.11.1 publish ++2.10.4 publish plugin/publish
 
 echo
 echo --- nightly status update
