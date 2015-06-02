@@ -64,7 +64,7 @@ function stamped {
 function build {
   local version=$1
   shift
-  sbt -Dplay.version=$PLAY_VERSION -Dtwirl.version=$TWIRL_VERSION "set version in ThisBuild := \"$version\"" "$@"
+  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
 }
 
 # checkout branches and extract versions
