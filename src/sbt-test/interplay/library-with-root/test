@@ -15,9 +15,7 @@ $ exec git branch -u origin/master
 > release with-defaults
 
 # Make sure publishSigned ran on every project with the right publish settings
-> contains target/scala-2.10/publish-version no-publish:1.2.3
 > contains target/scala-2.11/publish-version no-publish:1.2.3
-> contains mock-library/target/scala-2.10/publish-version sonatype-staging:1.2.3
 > contains mock-library/target/scala-2.11/publish-version sonatype-staging:1.2.3
 
 # Make sure sonatypeRelease ran only in the root project
