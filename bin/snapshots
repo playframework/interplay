@@ -5,6 +5,7 @@
 # Expects to be run against a directory with checked out repositories for:
 #
 #   - playframework
+#   - scalatestplus-play
 #   - anorm
 #   - play-ebean
 #   - play-slick
@@ -76,6 +77,9 @@ pushd $DEPLOY
 checkout $DEPLOY/playframework/framework $BRANCH
 PLAY_VERSION=$(stamped base_version)
 
+checkout $DEPLOY/scalatestplus-play $BRANCH
+SCALATESTPLUS_PLAY_VERSION=$(stamped base_version)
+
 checkout $DEPLOY/anorm $BRANCH
 ANORM_VERSION=$(stamped base_version)
 
@@ -93,12 +97,13 @@ TWIRL_VERSION=$(stamped base_version)
 echo
 echo --- Building snapshots
 echo
-echo "        play: $PLAY_VERSION"
-echo "       anorm: $ANORM_VERSION"
-echo "  play-ebean: $PLAY_EBEAN_VERSION"
-echo "  play-slick: $PLAY_SLICK_VERSION"
-echo "       twirl: $TWIRL_VERSION"
-echo "     omnidoc: $PLAY_VERSION"
+echo "               play: $PLAY_VERSION"
+echo " scalatestplus-play: $SCALATESTPLUS_PLAY_VERSION"
+echo "              anorm: $ANORM_VERSION"
+echo "         play-ebean: $PLAY_EBEAN_VERSION"
+echo "         play-slick: $PLAY_SLICK_VERSION"
+echo "              twirl: $TWIRL_VERSION"
+echo "            omnidoc: $PLAY_VERSION"
 
 export PLAY_VERSION
 
@@ -115,6 +120,13 @@ echo
 
 cd $DEPLOY/playframework/framework
 build $PLAY_VERSION +publish
+
+echo
+echo --- scalatestplus-play $SCALATESTPLUS_PLAY_VERSION
+echo
+
+cd $DEPLOY/scaletestplus-play
+build $SCALATESTPLUS_PLAY_VERSION +publish
 
 echo
 echo --- anorm $ANORM_VERSION
@@ -150,6 +162,7 @@ cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
   "branch": "master",
   "versions": {
     "play": "$PLAY_VERSION",
+    "scalatestplus-play": "$SCALATESTPLUS_PLAY_VERSION",
     "anorm": "$ANORM_VERSION",
     "play-ebean": "$PLAY_EBEAN_VERSION",
     "play-slick": "$PLAY_SLICK_VERSION",
@@ -164,6 +177,7 @@ echo
 
 versions=""
 versions="$versions -Dplay.version=$PLAY_VERSION"
+versions="$versions -Dscalatestplus-play.version=$SCALATESTPLUS_PLAY_VERSION"
 versions="$versions -Danorm.version=$ANORM_VERSION"
 versions="$versions -Dplay-ebean.version=$PLAY_EBEAN_VERSION"
 versions="$versions -Dplay-slick.version=$PLAY_SLICK_VERSION"
