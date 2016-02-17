@@ -125,7 +125,7 @@ echo
 echo --- scalatestplus-play $SCALATESTPLUS_PLAY_VERSION
 echo
 
-cd $DEPLOY/scaletestplus-play
+cd $DEPLOY/scalatestplus-play
 build $SCALATESTPLUS_PLAY_VERSION +publish
 
 echo
