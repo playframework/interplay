@@ -19,8 +19,10 @@ $ exists mock-sbt-plugin/target/scripted-ran
 
 # Make sure publishSigned ran on every project with the right publish settings
 > contains target/scala-2.11/publish-version no-publish:1.2.3
+> contains target/scala-2.12.0-M5/publish-version no-publish:1.2.3
 > contains mock-sbt-plugin/target/scala-2.10/sbt-0.13/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
 > contains mock-library/target/scala-2.11/publish-version sonatype-staging:1.2.3
+> contains mock-library/target/scala-2.12.0-M5/publish-version sonatype-staging:1.2.3
 > contains mock-sbt-library/target/scala-2.10/publish-version sonatype-staging:1.2.3
 
 # Make sure bintrayRelease ran only in the root project
