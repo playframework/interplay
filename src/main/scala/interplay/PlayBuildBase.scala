@@ -153,7 +153,7 @@ object PlayLibraryBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq(scalaVersion.value, "2.12.0-M5"),
+    crossScalaVersions := Seq(scalaVersion.value, "2.12.0-RC2"),
     scalaVersion := sys.props.get("scala.version").getOrElse("2.11.8"),
     playCrossBuildRootProject in ThisBuild := true
   )
@@ -242,7 +242,7 @@ object PlayRootProjectBase extends AutoPlugin {
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
-        Seq("2.11.8", "2.12.0-M5")
+        Seq("2.11.8", "2.12.0-RC2")
       } else {
         crossScalaVersions.value
       }
