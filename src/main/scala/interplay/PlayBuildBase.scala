@@ -153,8 +153,8 @@ object PlayLibraryBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq(scalaVersion.value, "2.12.0"),
-    scalaVersion := sys.props.get("scala.version").getOrElse("2.11.8"),
+    crossScalaVersions := Seq("2.11.8", scalaVersion.value),
+    scalaVersion := sys.props.get("scala.version").getOrElse("2.12.0"),
     playCrossBuildRootProject in ThisBuild := true
   )
 }
