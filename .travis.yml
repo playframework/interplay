@@ -1,17 +1,16 @@
 language: scala
-# Trusty VM has 1.8u101
-# https://github.com/travis-ci/travis-ci/issues/3259#issuecomment-243534696
 dist: trusty
 sudo: false
 group: beta
 script: sbt test scripted
 jdk:
-  - oraclejdk8
+- oraclejdk8
 cache:
   directories:
-    - $HOME/.ivy2/cache
+  - "$HOME/.ivy2/cache"
 before_cache:
-  # Delete the cached artifacts
-  - rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/interplay
-  # Delete all ivydata files
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+- rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/interplay
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+notifications:
+  slack:
+    secure: g1CnQB4HlPTMLYPAaiAA8gV1iI4ezQWHM5auH9UAZXJP+5chmsep9wI2h+Ne3nq5ZfD+gsKIg1ea3FoAxRL7JGUKXOSUJbKmPNc1lePQVyh2eBPPaaYt8ERXrXutmI8pndADxYztRIzzs6oPtRZckcYa7McRZmiRMPGiSLSu2jA=
