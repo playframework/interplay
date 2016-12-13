@@ -118,7 +118,7 @@ object PlaySbtPluginBase extends AutoPlugin {
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     ScriptedPlugin.scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" },
     sbtPlugin := true,
-
+    scalaVersion := sys.props.get("scala.version").getOrElse("2.10.6"),
     publishTo := {
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
