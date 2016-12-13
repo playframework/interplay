@@ -1,6 +1,10 @@
 language: scala
-script: sbt test scripted
+# Trusty VM has 1.8u101
+# https://github.com/travis-ci/travis-ci/issues/3259#issuecomment-243534696
+dist: trusty
 sudo: false
+group: beta
+script: sbt test scripted
 jdk:
   - oraclejdk8
 cache:
