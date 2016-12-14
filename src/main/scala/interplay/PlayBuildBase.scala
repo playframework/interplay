@@ -13,6 +13,12 @@ import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
+object ScalaVersions {
+  val scala210 = "2.10.6"
+  val scala211 = "2.11.8"
+  val scala212 = "2.12.1"
+}
+
 /**
  * Plugin that defines base settings for all Play projects
  */
@@ -26,7 +32,7 @@ object PlayBuildBase extends AutoPlugin {
     val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
     val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
     val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
-    val playBuildRepoName = settingKey[String]("The name of the playframework GitHub repository")
+    val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
     /**
      * Plugins configuration for a Play sbt plugin. Use this in preference to PlaySbtPluginBase, because this will
@@ -60,7 +66,7 @@ object PlayBuildBase extends AutoPlugin {
      * Convenience function to get the Play version. Allows the version to be overridden by a system property, which is
      * necessary for the nightly build.
      */
-    def playVersion(version: String) = sys.props.getOrElse("play.version", version)
+    def playVersion(version: String): String = sys.props.getOrElse("play.version", version)
   }
 
   import autoImport._
@@ -118,7 +124,7 @@ object PlaySbtPluginBase extends AutoPlugin {
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     ScriptedPlugin.scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" },
     sbtPlugin := true,
-    scalaVersion := sys.props.get("scala.version").getOrElse("2.10.6"),
+    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
     publishTo := {
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
@@ -153,8 +159,8 @@ object PlayLibraryBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq("2.11.8", scalaVersion.value),
-    scalaVersion := sys.props.get("scala.version").getOrElse("2.12.1"),
+    crossScalaVersions := Seq(ScalaVersions.scala211, scalaVersion.value),
+    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala212),
     playCrossBuildRootProject in ThisBuild := true
   )
 }
@@ -242,7 +248,7 @@ object PlayRootProjectBase extends AutoPlugin {
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
-        Seq("2.11.8", "2.12.1")
+        Seq(ScalaVersions.scala211, ScalaVersions.scala212)
       } else {
         crossScalaVersions.value
       }
