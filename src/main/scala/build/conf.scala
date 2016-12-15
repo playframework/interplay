@@ -17,7 +17,7 @@ object conf {
   }
 
   private def find(name: String, current: File = cwd): Option[File] = {
-    path(current.getCanonicalFile).map(dir => new File(dir, name)).filter(_.exists).headOption
+    path(current.getCanonicalFile).map(dir => new File(dir, name)).find(_.exists)
   }
 
   private def path(current: File, files: Seq[File] = Seq.empty): Seq[File] = {
