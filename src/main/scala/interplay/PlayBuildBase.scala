@@ -122,9 +122,10 @@ object PlaySbtPluginBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
-    ScriptedPlugin.scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" },
+    ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     sbtPlugin := true,
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
+    crossScalaVersions := Seq(ScalaVersions.scala210),
     publishTo := {
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
@@ -180,7 +181,8 @@ object PlaySbtLibraryBase extends AutoPlugin {
   override def projectSettings = Seq(
     playBuildPromoteSonatype in ThisBuild := true,
     (javacOptions in compile) := Seq("-source", "1.6", "-target", "1.6"),
-    (javacOptions in doc) := Seq("-source", "1.6")
+    (javacOptions in doc) := Seq("-source", "1.6"),
+    crossScalaVersions := Seq(ScalaVersions.scala210)
   )
 }
 
