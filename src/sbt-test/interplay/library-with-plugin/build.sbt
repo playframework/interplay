@@ -1,8 +1,21 @@
+lazy val common: Seq[Setting[_]] = Seq(
+  PgpKeys.publishSigned := {
+    IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
+  },
+  publish := { throw sys.error("Publish should not have been invoked") },
+  bintrayRelease := IO.write(target.value / "bintray-release-version", version.value),
+  bintrayCredentialsFile := (baseDirectory in ThisBuild).value / "bintray.credentials",
+  credentials := Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", "sbt", "notcorrectpassword"))
+)
+
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
-  .enablePlugins(PlayRootProject)
-  .aggregate(`mock-library`)
   .settings(common: _*)
+  .settings(
+    playCrossBuildRootProject in ThisBuild := true // activates cross build for Scala 2.11 and 2.12
+  )
+  .enablePlugins(PlayRootProject)
+  .aggregate(`mock-library`, `mock-sbt-plugin`) // has a sbt plugin that will be built together with root project
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
   .enablePlugins(PlaySbtPlugin)
@@ -42,16 +55,6 @@ InputKey[Unit]("contains") := {
     throw sys.error(s"File ${args.head} does not contain '$expected':\n$contents")
   }
 }
-
-def common: Seq[Setting[_]] = Seq(
-  PgpKeys.publishSigned := {
-    IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
-  },
-  publish := { throw sys.error("Publish should not have been invoked") },
-  bintrayRelease := IO.write(target.value / "bintray-release-version", version.value),
-  bintrayCredentialsFile := (baseDirectory in ThisBuild).value / "bintray.credentials",
-  credentials := Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", "sbt", "notcorrectpassword"))
-)
 
 commands in ThisBuild := {
   Command.command("sonatypeRelease") { state =>
