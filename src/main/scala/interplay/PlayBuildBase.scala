@@ -15,8 +15,8 @@ import xerial.sbt.Sonatype.autoImport._
 
 object ScalaVersions {
   val scala210 = "2.10.6"
-  val scala211 = "2.11.8"
-  val scala212 = "2.12.1"
+  val scala211 = "2.11.11"
+  val scala212 = "2.12.2"
 }
 
 /**
