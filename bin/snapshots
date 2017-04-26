@@ -112,7 +112,7 @@ echo --- twirl $TWIRL_VERSION
 echo
 
 cd $DEPLOY/twirl
-build $TWIRL_VERSION ++2.11.8 ++2.12.1 publish ++2.10.6 publish plugin/publish
+build $TWIRL_VERSION ++2.11.11 ++2.12.2 publish ++2.10.6 publish plugin/publish
 
 echo
 echo --- play $PLAY_VERSION
