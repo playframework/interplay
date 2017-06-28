@@ -239,7 +239,7 @@ object PlayReleaseBase extends AutoPlugin {
 
 }
 
-object PlayLicensePlugin extends AutoPlugin {
+object PlayWhitesourcePlugin extends AutoPlugin {
 
   override def requires: Plugins = WhiteSourcePlugin
 
