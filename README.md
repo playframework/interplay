@@ -4,12 +4,12 @@ Interplay is a set of sbt plugins for Play builds, sharing common configuration 
 
 ## Usage
 
-Ensure you're using sbt 0.13.13, by setting `sbt.version` in `project/build.properties`.
+Ensure you're using sbt 0.13.15, by setting `sbt.version` in `project/build.properties`.
 
 Add the interplay plugin to `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("com.typesafe.play" % "interplay" % sys.props.get("interplay.version").getOrElse("1.3.0"))
+addSbtPlugin("com.typesafe.play" % "interplay" % sys.props.get("interplay.version").getOrElse("1.3.5"))
 ```
 
 By allowing the version to be overridden using system properties, this means the Play nightly builds can override it to use the latest version.
@@ -57,3 +57,24 @@ playBuildExtraPublish := {
 ### Play docs
 
 If your project includes documentation that you want included in the main Play documentation, you can allow this by adding the `Playdoc` plugin to it.  In that case you also will need to configure the `playdocDirectory` to point to the documentation directory.
+
+## Whitesource integration
+
+Interplay has a `PlayWhitesourcePlugin` which can be used to help the integration with [sbt-whitesource](https://github.com/typesafehub/sbt-whitesource). To use it, add the following to your root project:
+
+```scala
+lazy val PlayFramework = Project("Play-Framework", file("."))
+    .enablePlugins(PlayRootProject)
+    .enablePlugins(PlayWhitesourcePlugin)
+    .settings(
+      whitesourceAggregateProjectName := "name-of-the-project", // project name on Whitesource
+      whitesourceAggregateProjectToken := "389ebacb-..." // project token on Whitesource
+    )
+```
+
+After that, you can run sbt [sbt-whitesource](https://github.com/typesafehub/sbt-whitesource) tasks:
+
+```bash
+sbt whitesourceCheckPolicies
+sbt whitesourceUpdate
+```

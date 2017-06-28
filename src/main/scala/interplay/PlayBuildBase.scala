@@ -13,6 +13,9 @@ import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
+import sbtwhitesource.WhiteSourcePlugin
+import sbtwhitesource.WhiteSourcePlugin.autoImport._
+
 object ScalaVersions {
   val scala210 = "2.10.6"
   val scala211 = "2.11.11"
@@ -234,6 +237,17 @@ object PlayReleaseBase extends AutoPlugin {
     }
   )
 
+}
+
+object PlayWhitesourcePlugin extends AutoPlugin {
+
+  override def requires: Plugins = WhiteSourcePlugin
+
+  override def trigger: PluginTrigger = allRequirements
+
+  override lazy val projectSettings = Seq(
+    whitesourceProduct := "Lightbend Reactive Platform"
+  )
 }
 
 /**

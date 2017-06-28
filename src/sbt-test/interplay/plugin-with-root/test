@@ -12,6 +12,9 @@ $ exec git remote add origin target/remote
 $ exec git push origin master
 $ exec git branch -u origin/master
 
+$ exec git status
+$ exec git diff
+
 > release with-defaults
 
 # Make sure scripted tests ran
