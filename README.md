@@ -4,12 +4,12 @@ Interplay is a set of sbt plugins for Play builds, sharing common configuration 
 
 ## Usage
 
-Ensure you're using sbt 0.13.13, by setting `sbt.version` in `project/build.properties`.
+Ensure you're using sbt 0.13.15, by setting `sbt.version` in `project/build.properties`.
 
 Add the interplay plugin to `project/plugins.sbt`:
 
 ```scala
-addSbtPlugin("com.typesafe.play" % "interplay" % sys.props.get("interplay.version").getOrElse("1.3.0"))
+addSbtPlugin("com.typesafe.play" % "interplay" % sys.props.get("interplay.version").getOrElse("1.3.5"))
 ```
 
 By allowing the version to be overridden using system properties, this means the Play nightly builds can override it to use the latest version.
