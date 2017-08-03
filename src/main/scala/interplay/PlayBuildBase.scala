@@ -23,6 +23,11 @@ object ScalaVersions {
   val scala213 = "2.13.0-M1"
 }
 
+object SbtVersions {
+  final val sbt013: String = "0.13.16"
+  final val sbt10: String  = "1.0.0-RC3"
+}
+
 /**
  * Plugin that defines base settings for all Play projects
  */
@@ -128,8 +133,14 @@ object PlaySbtPluginBase extends AutoPlugin {
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     sbtPlugin := true,
-    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
-    crossScalaVersions := Seq(ScalaVersions.scala210),
+
+    scalaVersion := (CrossVersion partialVersion (sbtVersion in pluginCrossBuild).value match {
+      case Some((0, 13)) => ScalaVersions.scala210
+      case Some((1, _))  => ScalaVersions.scala212
+      case _             => sys error s"Unhandled sbt version ${(sbtVersion in pluginCrossBuild).value}"
+    }),
+    crossSbtVersions := Vector(SbtVersions.sbt013, SbtVersions.sbt10),
+
     publishTo := {
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
@@ -186,7 +197,7 @@ object PlaySbtLibraryBase extends AutoPlugin {
     playBuildPromoteSonatype in ThisBuild := true,
     (javacOptions in compile) := Seq("-source", "1.6", "-target", "1.6"),
     (javacOptions in doc) := Seq("-source", "1.6"),
-    crossScalaVersions := Seq(ScalaVersions.scala210)
+    crossScalaVersions := Seq(ScalaVersions.scala210, ScalaVersions.scala212)
   )
 }
 
