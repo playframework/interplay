@@ -124,17 +124,21 @@ object PlaySbtPluginBase extends AutoPlugin {
   override def requires = PlayBintrayBase && PlayBuildBase
 
   import PlayBuildBase.autoImport._
+  import ScriptedPlugin.autoImport._
 
-  override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
-    ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
+  override def projectSettings = ScriptedPlugin.projectSettings ++ Seq(
+    scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     sbtPlugin := true,
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
     crossScalaVersions := Seq(ScalaVersions.scala210),
-    publishTo := {
-      if (isSnapshot.value) {
+    publishTo := Def.taskDyn {
+      val pubTo = if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
-      } else publishTo.value
-    },
+      } else {
+        publishTo.value
+      }
+      Def.task(pubTo)
+    }.value,
 
     publishMavenStyle := isSnapshot.value,
     playBuildPromoteBintray in ThisBuild := true,
@@ -202,8 +206,8 @@ object PlayReleaseBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildExtraPublish := (),
-    playBuildExtraTests := (),
+    playBuildExtraPublish := ((): Unit),
+    playBuildExtraTests := ((): Unit),
 
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
