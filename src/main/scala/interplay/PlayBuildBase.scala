@@ -20,7 +20,6 @@ object ScalaVersions {
   val scala210 = "2.10.6"
   val scala211 = "2.11.11"
   val scala212 = "2.12.3"
-  val scala213 = "2.13.0-M1"
 }
 
 /**
@@ -164,7 +163,7 @@ object PlayLibraryBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq(ScalaVersions.scala211, ScalaVersions.scala212, ScalaVersions.scala213),
+    crossScalaVersions := Seq(ScalaVersions.scala211, scalaVersion.value),
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala212),
     playCrossBuildRootProject in ThisBuild := true
   )
@@ -265,7 +264,7 @@ object PlayRootProjectBase extends AutoPlugin {
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
-        Seq(ScalaVersions.scala211, ScalaVersions.scala212, ScalaVersions.scala213)
+        Seq(ScalaVersions.scala211, ScalaVersions.scala212)
       } else {
         crossScalaVersions.value
       }
