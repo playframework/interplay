@@ -22,7 +22,7 @@ object Playdoc extends AutoPlugin {
       playdocDirectory := (baseDirectory in ThisBuild).value / "docs" / "manual",
       mappings in playdocPackage := {
         val base = playdocDirectory.value
-        base.***.get pair relativeTo(base.getParentFile)
+        base.allPaths.get pair sbt.io.Path.relativeTo(base.getParentFile)
       },
       artifactClassifier in playdocPackage := Some("playdoc"),
       artifact in playdocPackage ~= { _.copy(configurations = Seq(Docs)) }
