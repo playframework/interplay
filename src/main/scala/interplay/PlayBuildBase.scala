@@ -1,25 +1,35 @@
 package interplay
 
-import bintray.BintrayPlugin
-import bintray.BintrayPlugin.autoImport._
+import sbt._
+import sbt.Keys._
+import sbt.plugins.JvmPlugin
+
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys
-import interplay.Omnidoc.autoImport._
-import sbt.Keys._
-import sbt._
-import sbt.plugins.JvmPlugin
-import sbtrelease.ReleasePlugin
-import sbtrelease.ReleasePlugin.autoImport._
+
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
+import bintray.BintrayPlugin
+import bintray.BintrayPlugin.autoImport._
+
+import sbtrelease.ReleasePlugin
+import sbtrelease.ReleasePlugin.autoImport._
+
 import sbtwhitesource.WhiteSourcePlugin
 import sbtwhitesource.WhiteSourcePlugin.autoImport._
+
+import interplay.Omnidoc.autoImport._
 
 object ScalaVersions {
   val scala210 = "2.10.6"
   val scala211 = "2.11.11"
   val scala212 = "2.12.3"
+}
+
+object SbtVersions {
+  val sbt013 = "0.13.16"
+  val sbt10 = "1.0.0"
 }
 
 /**
@@ -166,22 +176,45 @@ object PlayReleaseBase extends AutoPlugin {
         }
       }
 
-      Seq[ReleaseStep](
-        checkSnapshotDependencies,
-        inquireVersions,
-        runTest,
-        releaseStepTask(playBuildExtraTests in thisProjectRef.value),
-        setReleaseVersion,
-        commitReleaseVersion,
-        tagRelease,
-        publishArtifacts,
-        releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
-        ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
-        setNextVersion,
-        commitNextVersion,
-        pushChanges
-      )
+      CrossVersion partialVersion (sbtVersion in pluginCrossBuild).value match {
+        case Some((1, _)) =>
+          Seq[ReleaseStep](
+            checkSnapshotDependencies,
+            inquireVersions,
+            runClean,
+            releaseStepCommandAndRemaining("^ test"),
+            releaseStepCommandAndRemaining("^ scripted"),
+            setReleaseVersion,
+            commitReleaseVersion,
+            tagRelease,
+            releaseStepCommandAndRemaining("^ publishSigned"),
+            releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
+            ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
+            ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+            setNextVersion,
+            commitNextVersion,
+            pushChanges
+          )
+
+        case _ =>
+          Seq[ReleaseStep](
+            checkSnapshotDependencies,
+            inquireVersions,
+            runClean,
+            runTest,
+            releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+            setReleaseVersion,
+            commitReleaseVersion,
+            tagRelease,
+            publishArtifacts,
+            releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
+            ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
+            ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+            setNextVersion,
+            commitNextVersion,
+            pushChanges
+          )
+      }
     }
   )
 
