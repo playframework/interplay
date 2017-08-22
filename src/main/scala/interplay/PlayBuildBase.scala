@@ -1,25 +1,35 @@
 package interplay
 
-import bintray.BintrayPlugin
-import bintray.BintrayPlugin.autoImport._
+import sbt._
+import sbt.Keys._
+import sbt.plugins.JvmPlugin
+
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys
-import interplay.Omnidoc.autoImport._
-import sbt.Keys._
-import sbt._
-import sbt.plugins.JvmPlugin
-import sbtrelease.ReleasePlugin
-import sbtrelease.ReleasePlugin.autoImport._
+
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
 
+import bintray.BintrayPlugin
+import bintray.BintrayPlugin.autoImport._
+
+import sbtrelease.ReleasePlugin
+import sbtrelease.ReleasePlugin.autoImport._
+
 import sbtwhitesource.WhiteSourcePlugin
 import sbtwhitesource.WhiteSourcePlugin.autoImport._
+
+import interplay.Omnidoc.autoImport._
 
 object ScalaVersions {
   val scala210 = "2.10.6"
   val scala211 = "2.11.11"
   val scala212 = "2.12.3"
+}
+
+object SbtVersions {
+  val sbt013 = "0.13.16"
+  val sbt10 = "1.0.0"
 }
 
 /**
@@ -112,38 +122,6 @@ object PlayBuildBase extends AutoPlugin {
 }
 
 /**
- * Base Plugin for Play sbt plugins.
- *
- * - Publishes the plugin to bintray, or sonatype snapshots if it's a snapshot build.
- * - Adds scripted configuration.
- */
-object PlaySbtPluginBase extends AutoPlugin {
-
-  override def trigger = noTrigger
-  override def requires = PlayBintrayBase && PlayBuildBase
-
-  import PlayBuildBase.autoImport._
-
-  override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
-    ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
-    sbtPlugin := true,
-    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
-    crossScalaVersions := Seq(ScalaVersions.scala210),
-    publishTo := {
-      if (isSnapshot.value) {
-        Some(Opts.resolver.sonatypeSnapshots)
-      } else publishTo.value
-    },
-
-    publishMavenStyle := isSnapshot.value,
-    playBuildPromoteBintray in ThisBuild := true,
-
-    (javacOptions in compile) ++= Seq("-source", "1.6", "-target", "1.6"),
-    (javacOptions in doc) := Seq("-source", "1.6")
-  )
-}
-
-/**
  * Base Plugin for Play libraries.
  *
  * - Publishes to sonatype
@@ -170,26 +148,6 @@ object PlayLibraryBase extends AutoPlugin {
 }
 
 /**
- * Base Plugin for Play SBT libraries.
- *
- * - Publishes to sonatype
- */
-object PlaySbtLibraryBase extends AutoPlugin {
-
-  override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlaySonatypeBase
-
-  import PlayBuildBase.autoImport._
-
-  override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true,
-    (javacOptions in compile) := Seq("-source", "1.6", "-target", "1.6"),
-    (javacOptions in doc) := Seq("-source", "1.6"),
-    crossScalaVersions := Seq(ScalaVersions.scala210)
-  )
-}
-
-/**
  * Base Plugin for releasing.
  *
  * Generally this should only be enabled for the root project.
@@ -201,8 +159,8 @@ object PlayReleaseBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildExtraPublish := (),
-    playBuildExtraTests := (),
+    playBuildExtraPublish := ((): Unit),
+    playBuildExtraTests := ((): Unit),
 
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -218,22 +176,45 @@ object PlayReleaseBase extends AutoPlugin {
         }
       }
 
-      Seq[ReleaseStep](
-        checkSnapshotDependencies,
-        inquireVersions,
-        runTest,
-        releaseStepTask(playBuildExtraTests in thisProjectRef.value),
-        setReleaseVersion,
-        commitReleaseVersion,
-        tagRelease,
-        publishArtifacts,
-        releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
-        ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
-        setNextVersion,
-        commitNextVersion,
-        pushChanges
-      )
+      CrossVersion partialVersion (sbtVersion in pluginCrossBuild).value match {
+        case Some((1, _)) =>
+          Seq[ReleaseStep](
+            checkSnapshotDependencies,
+            inquireVersions,
+            runClean,
+            releaseStepCommandAndRemaining("^ test"),
+            releaseStepCommandAndRemaining("^ scripted"),
+            setReleaseVersion,
+            commitReleaseVersion,
+            tagRelease,
+            releaseStepCommandAndRemaining("^ publishSigned"),
+            releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
+            ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
+            ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+            setNextVersion,
+            commitNextVersion,
+            pushChanges
+          )
+
+        case _ =>
+          Seq[ReleaseStep](
+            checkSnapshotDependencies,
+            inquireVersions,
+            runClean,
+            runTest,
+            releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+            setReleaseVersion,
+            commitReleaseVersion,
+            tagRelease,
+            publishArtifacts,
+            releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
+            ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
+            ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+            setNextVersion,
+            commitNextVersion,
+            pushChanges
+          )
+      }
     }
   )
 

@@ -7,28 +7,23 @@ $ exec git add .
 $ exec git commit -m commit
 
 # Setup remote git repo in target directory
-$ exec git init --bare target/remote
-$ exec git remote add origin target/remote
+$ exec git init --bare $PWD/target/remote
+$ exec git remote add origin $PWD/target/remote
 $ exec git push origin master
 $ exec git branch -u origin/master
-
-$ exec git status
-$ exec git diff
 
 > release with-defaults
 
 # Make sure publishSigned ran on every project with the right publish settings
-> contains target/scala-2.11/publish-version no-publish:1.2.3
-> contains target/scala-2.12/publish-version no-publish:1.2.3
-> contains mock-library/target/scala-2.11/publish-version sonatype-staging:1.2.3
-> contains mock-library/target/scala-2.12/publish-version sonatype-staging:1.2.3
+> someContains target/scala-2.10/publish-version target/scala-2.12/publish-version no-publish:1.2.3
+> someContains mock-library/target/scala-2.10/publish-version mock-library/target/scala-2.12/publish-version sonatype-snapshots:1.2.3
 
 # Make sure sonatypeRelease ran only in the root project
-> contains target/sonatype-release-version 1.2.3
+> someContains target/sonatype-release-version 1.2.3
 -$ exists mock-library/target/sonatype-release-version
 
 # Make sure the version was updated
-> contains version.sbt 1.2.4-SNAPSHOT
+> someContains version.sbt 1.2.4-SNAPSHOT
 
 # Make sure the git repo was tagged
 $ exec git show 1.2.3
