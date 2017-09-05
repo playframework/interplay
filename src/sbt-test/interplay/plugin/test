@@ -12,7 +12,7 @@ $ exec git remote add origin $PWD/target/remote
 $ exec git push origin master
 $ exec git branch -u origin/master
 
-> release with-defaults
+> release cross with-defaults
 
 # Make sure scripted tests ran
 $ exists target/scripted-ran
