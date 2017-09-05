@@ -19,6 +19,7 @@ $ exists target/scripted-ran
 
 # Make sure publishSigned ran
 > contains target/scala-2.10/sbt-0.13/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
+> contains target/scala-2.12/sbt-1.0/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
 
 # Make sure bintrayRelease ran
 > contains target/bintray-release-version 1.2.3

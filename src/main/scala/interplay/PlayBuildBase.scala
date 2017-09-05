@@ -22,6 +22,11 @@ object ScalaVersions {
   val scala212 = "2.12.3"
 }
 
+object SbtVersions {
+  val sbt013 = "0.13.16"
+  val sbt10 = "1.0.1"
+}
+
 /**
  * Plugin that defines base settings for all Play projects
  */
@@ -111,6 +116,33 @@ object PlayBuildBase extends AutoPlugin {
   )
 }
 
+private object PlaySbtBuildBase extends AutoPlugin {
+
+  override def trigger = noTrigger
+  override def requires = PlayBuildBase
+
+  private def choose[T](scalaBinVersion: String)(forScala210: T, forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
+    case Some((2, 12)) => forScala212
+    case _ => forScala210
+  }
+
+  override def projectSettings = Seq(
+    crossScalaVersions := Seq(ScalaVersions.scala210, ScalaVersions.scala212),
+    sbtVersion in pluginCrossBuild := choose(scalaBinaryVersion.value)(
+      forScala210 = SbtVersions.sbt013,
+      forScala212 = SbtVersions.sbt10
+    ),
+    javacOptions in compile ++= choose(scalaBinaryVersion.value)(
+      forScala210 = Seq("-source", "1.6", "-target", "1.6"),
+      forScala212 = Seq("-source", "1.8", "-target", "1.8")
+    ),
+    javacOptions in doc := choose(scalaBinaryVersion.value)(
+      forScala210 = Seq("-source", "1.6"),
+      forScala212 = Seq("-source", "1.8")
+    )
+  )
+}
+
 /**
  * Base Plugin for Play sbt plugins.
  *
@@ -120,15 +152,13 @@ object PlayBuildBase extends AutoPlugin {
 object PlaySbtPluginBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBintrayBase && PlayBuildBase
+  override def requires = PlayBintrayBase && PlayBuildBase && PlaySbtBuildBase
 
   import PlayBuildBase.autoImport._
 
   override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     sbtPlugin := true,
-    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala210),
-    crossScalaVersions := Seq(ScalaVersions.scala210),
     publishTo := {
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
@@ -136,10 +166,7 @@ object PlaySbtPluginBase extends AutoPlugin {
     },
 
     publishMavenStyle := isSnapshot.value,
-    playBuildPromoteBintray in ThisBuild := true,
-
-    (javacOptions in compile) ++= Seq("-source", "1.6", "-target", "1.6"),
-    (javacOptions in doc) := Seq("-source", "1.6")
+    playBuildPromoteBintray in ThisBuild := true
   )
 }
 
@@ -177,15 +204,12 @@ object PlayLibraryBase extends AutoPlugin {
 object PlaySbtLibraryBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlaySonatypeBase
+  override def requires = PlayBuildBase && PlaySbtBuildBase && PlaySonatypeBase
 
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true,
-    (javacOptions in compile) := Seq("-source", "1.6", "-target", "1.6"),
-    (javacOptions in doc) := Seq("-source", "1.6"),
-    crossScalaVersions := Seq(ScalaVersions.scala210)
+    playBuildPromoteSonatype in ThisBuild := true
   )
 }
 
@@ -266,7 +290,7 @@ object PlayRootProjectBase extends AutoPlugin {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
         Seq(ScalaVersions.scala211, ScalaVersions.scala212)
       } else {
-        crossScalaVersions.value
+        Seq(ScalaVersions.scala210, ScalaVersions.scala212)
       }
     }
   )
