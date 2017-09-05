@@ -7,7 +7,7 @@ description := "Base build plugin for all Play modules"
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
-addSbtPlugin("me.lessis" % "bintray-sbt" % bintraySbtVersion)
+addSbtPlugin("org.foundweekends" % "sbt-bintray" % sbtBintrayVersion)
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 
@@ -21,3 +21,11 @@ playBuildExtraTests := {
 }
 
 playBuildRepoName in ThisBuild := "interplay"
+
+sbtPlugin := true
+
+sbtVersion := "0.13.16"
+
+crossSbtVersions := Seq("0.13.16")
+
+addCommandAlias("validate", ";clean;test;scripted")
