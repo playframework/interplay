@@ -63,5 +63,3 @@ commands in ThisBuild := {
     state
   } +: (commands in ThisBuild).value
 }
-
-

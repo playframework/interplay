@@ -2,7 +2,7 @@ language: scala
 dist: trusty
 sudo: false
 group: beta
-script: sbt test scripted
+script: sbt validate
 jdk:
 - oraclejdk8
 cache:
