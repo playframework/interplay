@@ -35,38 +35,9 @@ if [ -z "$DEPLOY" ] ; then
   DEPLOY=$(pwd)
 fi
 
-# checkout out a clean version of a branch
-function checkout {
-  local dir=$1
-  local branch=$2
-  echo "Checking out $dir ($branch)"
-  cd $dir
-  git fetch
-  git checkout $branch
-  git reset --hard origin/$branch
-  git clean -fxd
-}
-
-# detect base version from version.sbt
-function base_version {
-  echo $(cat version.sbt | sed 's/version in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
-}
-
-# create a timestamped and git hashed version
-function stamped {
-  local get_version=$1
-  local base=$($get_version)
-  local today=$(date +"%Y-%m-%d")
-  local sha=$(git log --pretty=format:'%h' -n 1)
-  echo "${base}-${today}-${sha}-SNAPSHOT"
-}
-
-# versioned sbt build for play modules
-function build {
-  local version=$1
-  shift
-  sbt -Dplay.version=$PLAY_VERSION "set version in ThisBuild := \"$version\"" "$@"
-}
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/utils"
 
 # checkout branches and extract versions
 
