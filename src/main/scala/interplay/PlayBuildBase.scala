@@ -24,7 +24,7 @@ object ScalaVersions {
 
 object SbtVersions {
   val sbt013 = "0.13.16"
-  val sbt10 = "1.0.1"
+  val sbt10 = "1.0.2"
 }
 
 /**
@@ -245,15 +245,24 @@ object PlayReleaseBase extends AutoPlugin {
       Seq[ReleaseStep](
         checkSnapshotDependencies,
         inquireVersions,
+        runClean,
         runTest,
         releaseStepTask(playBuildExtraTests in thisProjectRef.value),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
-        publishArtifacts,
+
+        if (sbtPlugin.value) ReleaseStep(action = Command.process("publishSigned", _), enableCrossBuild = true)
+        else publishArtifacts,
+
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+
+        if (sbtPlugin.value)
+          ifDefinedAndTrue(playBuildPromoteSonatype, ReleaseStep(action = Command.process("sonatypeRelease", _), enableCrossBuild = true))
+        else
+          ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+
         setNextVersion,
         commitNextVersion,
         pushChanges
