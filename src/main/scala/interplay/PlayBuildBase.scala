@@ -252,14 +252,14 @@ object PlayReleaseBase extends AutoPlugin {
         commitReleaseVersion,
         tagRelease,
 
-        if (sbtPlugin.value) ReleaseStep(action = Command.process("publishSigned", _), enableCrossBuild = true)
+        if (sbtPlugin.value) releaseStepCommandAndRemaining("+publishSigned")
         else publishArtifacts,
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
 
         if (sbtPlugin.value)
-          ifDefinedAndTrue(playBuildPromoteSonatype, ReleaseStep(action = Command.process("sonatypeRelease", _), enableCrossBuild = true))
+          ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommandAndRemaining("+sonatypeRelease"))
         else
           ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
 
