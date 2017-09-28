@@ -40,6 +40,7 @@ object PlayBuildBase extends AutoPlugin {
     val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
     val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
     val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
+    val playCrossReleasePlugins = settingKey[Boolean]("Whether the sbt plugins should be cross released or not")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
     /**
@@ -231,6 +232,7 @@ object PlayReleaseBase extends AutoPlugin {
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     releaseTagName := (version in ThisBuild).value,
+    playCrossReleasePlugins := true,
     releaseCrossBuild := (playCrossBuildRootProject in ThisBuild).?.value.exists(identity),
     releaseProcess := {
       import ReleaseTransformations._
@@ -252,13 +254,13 @@ object PlayReleaseBase extends AutoPlugin {
         commitReleaseVersion,
         tagRelease,
 
-        if (sbtPlugin.value) releaseStepCommandAndRemaining("+publishSigned")
+        if (sbtPlugin.value && playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+publishSigned")
         else publishArtifacts,
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
 
-        if (sbtPlugin.value)
+        if (sbtPlugin.value && playCrossReleasePlugins.value)
           ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommandAndRemaining("+sonatypeRelease"))
         else
           ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),

@@ -2,6 +2,7 @@ import buildinfo.BuildInfo._
 
 lazy val interplay = (project in file("."))
   .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
+  .settings(playCrossReleasePlugins := false)
 
 description := "Base build plugin for all Play modules"
 
