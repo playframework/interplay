@@ -248,23 +248,21 @@ object PlayReleaseBase extends AutoPlugin {
         checkSnapshotDependencies,
         inquireVersions,
         runClean,
-        runTest,
+
+        if (playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+test")
+        else runTest,
+
         releaseStepTask(playBuildExtraTests in thisProjectRef.value),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
 
-        if (sbtPlugin.value && playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+publishSigned")
+        if (playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+publishSigned")
         else publishArtifacts,
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-
-        if (sbtPlugin.value && playCrossReleasePlugins.value)
-          ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommandAndRemaining("+sonatypeRelease"))
-        else
-          ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
-
+        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
         setNextVersion,
         commitNextVersion,
         pushChanges
