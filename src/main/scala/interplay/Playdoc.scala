@@ -6,6 +6,7 @@ import sbt.Keys._
 object Playdoc extends AutoPlugin {
 
   object autoImport {
+    final val Docs = config("docs")
     val playdocDirectory = settingKey[File]("Base directory of play documentation")
     val playdocPackage = taskKey[File]("Package play documentation")
   }
@@ -21,11 +22,11 @@ object Playdoc extends AutoPlugin {
     Seq(
       playdocDirectory := (baseDirectory in ThisBuild).value / "docs" / "manual",
       mappings in playdocPackage := {
-        val base = playdocDirectory.value
-        base.***.get pair relativeTo(base.getParentFile)
+        val base: File = playdocDirectory.value
+        PlaySbtCompat.PathCompat.allPaths(base).pair(PlaySbtCompat.PathCompat.relativeTo(base.getParentFile))
       },
       artifactClassifier in playdocPackage := Some("playdoc"),
-      artifact in playdocPackage ~= { _.copy(configurations = Seq(Docs)) }
+      artifact in playdocPackage ~= { _.withConfigurations(Vector(Docs)) }
     ) ++
     addArtifact(artifact in playdocPackage, playdocPackage)
 

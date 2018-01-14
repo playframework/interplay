@@ -24,12 +24,21 @@ object Omnidoc extends AutoPlugin {
 
   override def projectSettings = Seq(
     omnidocSourceUrl := omnidocGithubRepo.?.value map { repo =>
-      val development = (omnidocSnapshotBranch ?? "master").value
-      val tagged = (omnidocTagPrefix ?? "v").value + version.value
-      val tree = if (isSnapshot.value) development else tagged
-      val prefix = "/" + (omnidocPathPrefix ?? "").value
-      val directory = IO.relativize((baseDirectory in ThisBuild).value, baseDirectory.value)
-      val path = directory.fold("")(prefix.+)
+      val development: String = (omnidocSnapshotBranch ?? "master").value
+      val tagged: String = (omnidocTagPrefix ?? "v").value + version.value
+      val tree: String = if (isSnapshot.value) development else tagged
+      val prefix: String = "/" + (omnidocPathPrefix ?? "").value
+      val path: String = {
+        val buildDir: File = (baseDirectory in ThisBuild).value
+        val projDir: File = baseDirectory.value
+        val rel: Option[String] = IO.relativize(buildDir, projDir)
+        rel match {
+          case None if buildDir == projDir => "" // Same dir (sbt 0.13)
+          case Some("") => "" // Same dir (sbt 1.0)
+          case Some(childDir) => prefix + childDir // Child dir
+          case None => "" // Disjoint dirs (Rich: I'm not sure if this can happen)
+        }
+      }
       s"https://github.com/${repo}/tree/${tree}${path}"
     },
     packageOptions in (Compile, packageSrc) ++= omnidocSourceUrl.value.toSeq map { url =>

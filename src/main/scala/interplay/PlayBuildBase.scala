@@ -16,8 +16,8 @@ import sbtwhitesource.WhiteSourcePlugin
 import sbtwhitesource.WhiteSourcePlugin.autoImport._
 
 object ScalaVersions {
-  val scala210 = "2.10.6"
-  val scala211 = "2.11.11"
+  val scala210 = "2.10.7"
+  val scala211 = "2.11.12"
   val scala212 = "2.12.4"
   val scala213 = "2.13.0-M2"
 }
@@ -34,6 +34,17 @@ object PlayBuildBase extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = SbtPgp && JvmPlugin
 
+  /** Helper for operations on plugins. */
+  private implicit class EnhancedPlugins(val plugins: Plugins) extends AnyVal {
+    /** Disable the given plugin. */
+    def &&!(plugin: AutoPlugin): Plugins = plugins && PluginsAccessor.exclude(plugin)
+    /** Disable the given plugin, if it's defined. */
+    def &&!(optPlugin: Option[AutoPlugin]): Plugins = optPlugin match {
+      case None => plugins
+      case Some(plugin) => this &&! plugin
+    }
+  }
+  
   object autoImport {
     val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
@@ -56,29 +67,29 @@ object PlayBuildBase extends AutoPlugin {
      * Plugins configuration for a Play sbt plugin. Use this in preference to PlaySbtPluginBase, because this will
      * also disable the Sonatype plugin.
      */
-    def PlaySbtPlugin: Plugins = PlaySbtPluginBase && PluginsAccessor.exclude(Sonatype)
+    def PlaySbtPlugin: Plugins = PlaySbtPluginBase &&! Sonatype
 
     /**
      * Plugins configuration for a Play sbt library. Use this in preference to PlaySbtLibraryBase, because this will
      * also disable the Bintray plugin.
      */
-    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase && PluginsAccessor.exclude(BintrayPlugin)
+    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase &&! BintrayPlugin
 
     /**
      * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
      * also disable the Bintray plugin.
      */
-    def PlayLibrary: Plugins = PlayLibraryBase && PluginsAccessor.exclude(BintrayPlugin)
+    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin &&! PlaySbtCompat.optScriptedAutoPlugin
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.
      */
-    def PlayRootProject: Plugins = PlayRootProjectBase
+    def PlayRootProject: Plugins = PlayRootProjectBase &&! PlaySbtCompat.optScriptedAutoPlugin
 
     /**
      * Plugins configuration for a Play project that doesn't get published.
      */
-    def PlayNoPublish: Plugins = PlayNoPublishBase && PluginsAccessor.exclude(BintrayPlugin) && PluginsAccessor.exclude(Sonatype)
+    def PlayNoPublish: Plugins = PlayNoPublishBase &&! BintrayPlugin &&! Sonatype
 
     /**
      * Convenience function to get the Play version. Allows the version to be overridden by a system property, which is
@@ -145,6 +156,8 @@ private object PlaySbtBuildBase extends AutoPlugin {
   override def trigger = noTrigger
   override def requires = PlayBuildBase
 
+  import PlayBuildBase.autoImport._
+
   private def choose[T](scalaBinVersion: String)(forScala210: T, forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
     case Some((2, 12)) => forScala212
     case _ => forScala210
@@ -180,13 +193,14 @@ object PlaySbtPluginBase extends AutoPlugin {
 
   import PlayBuildBase.autoImport._
 
-  override def projectSettings = ScriptedPlugin.scriptedSettings ++ Seq(
-    ScriptedPlugin.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
+  override def projectSettings = PlaySbtCompat.scriptedSettings /* FIXME: Not needed in sbt 1 */ ++ Seq(
+    PlaySbtCompat.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     sbtPlugin := true,
     publishTo := {
+      val currentValue = publishTo.value
       if (isSnapshot.value) {
         Some(Opts.resolver.sonatypeSnapshots)
-      } else publishTo.value
+      } else currentValue
     },
 
     publishMavenStyle := isSnapshot.value,
@@ -201,7 +215,7 @@ object PlaySbtPluginBase extends AutoPlugin {
  * - Includes omnidoc configuration
  * - Cross builds the project
  */
-object PlayLibraryBase extends AutoPlugin {
+  object PlayLibraryBase extends AutoPlugin {
 
   override def trigger = noTrigger
   override def requires = PlayBuildBase && PlaySonatypeBase && Omnidoc
@@ -249,8 +263,8 @@ object PlayReleaseBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildExtraPublish := (),
-    playBuildExtraTests := (),
+    playBuildExtraPublish := { () },
+    playBuildExtraTests := { () },
 
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -389,6 +403,7 @@ object PlaySonatypeBase extends AutoPlugin {
   override def requires = Sonatype
 
   override def projectSettings = Seq(
-    sonatypeProfileName := "com.typesafe"
+    sonatypeProfileName := "com.typesafe",
+    publishTo := Some(sonatypeDefaultResolver.value)
   )
 }
