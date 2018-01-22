@@ -2,6 +2,7 @@ package interplay
 
 import bintray.BintrayPlugin
 import bintray.BintrayPlugin.autoImport._
+import com.typesafe.sbt.SbtGit.GitKeys._
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys
 import interplay.Omnidoc.autoImport._
@@ -12,7 +13,6 @@ import sbtrelease.ReleasePlugin
 import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport._
-
 import sbtwhitesource.WhiteSourcePlugin
 import sbtwhitesource.WhiteSourcePlugin.autoImport._
 
@@ -280,7 +280,30 @@ object PlayWhitesourcePlugin extends AutoPlugin {
   override def trigger: PluginTrigger = allRequirements
 
   override lazy val projectSettings = Seq(
-    whitesourceProduct := "Lightbend Reactive Platform"
+    whitesourceProduct := "Lightbend Reactive Platform",
+    whitesourceAggregateProjectName := {
+      if (isSnapshot.value) {
+        // There are two scenarios then:
+        // 1. It is the master branch
+        // 2. It is a release branch (2.6.x, 2.5.x, etc)
+        if (gitCurrentBranch.value == "master") {
+          "master"
+        } else {
+          // If it is not "master", then it is a release branch
+          // that should also be handled as an adhoc report.
+          CrossVersion.partialVersion((version in LocalRootProject).value) match {
+            case Some((major, minor)) => s"$major.$minor-adhoc"
+            case None => "adhoc"
+          }
+        }
+      } else {
+        // Here we have only the case where we are releasing a version.
+        CrossVersion.partialVersion((version in LocalRootProject).value) match {
+          case Some((major, minor)) => s"$major.$minor-stable"
+          case None => "adhoc"
+        }
+      }
+    }
   )
 }
 
