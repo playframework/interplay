@@ -290,17 +290,17 @@ object PlayWhitesourcePlugin extends AutoPlugin {
           "master"
         } else {
           // If it is not "master", then it is a release branch
-          // that should also be handled as an adhoc report.
+          // that should also be handled as an snapshot report.
           CrossVersion.partialVersion((version in LocalRootProject).value) match {
-            case Some((major, minor)) => s"$major.$minor-adhoc"
-            case None => "adhoc"
+            case Some((major, minor)) => s"$major.$minor-snapshot"
+            case None => "snapshot"
           }
         }
       } else {
         // Here we have only the case where we are releasing a version.
         CrossVersion.partialVersion((version in LocalRootProject).value) match {
           case Some((major, minor)) => s"$major.$minor-stable"
-          case None => "adhoc"
+          case None => "snapshot"
         }
       }
     }
