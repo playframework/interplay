@@ -11,6 +11,7 @@ addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % sbtBintrayVersion)
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
+addSbtPlugin("com.typesafe.sbt" % "sbt-git" % sbtGitVersion)
 
 libraryDependencies ++= Seq(
   "org.scala-sbt" % "scripted-plugin" % scriptedPluginVersion,
