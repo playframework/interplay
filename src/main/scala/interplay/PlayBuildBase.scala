@@ -281,7 +281,7 @@ object PlayWhitesourcePlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     whitesourceProduct := "Lightbend Reactive Platform",
-    whitesourceAggregateProjectName := {
+    whitesourceAggregateProjectName := (moduleName in LocalRootProject).value + "-" + {
       if (isSnapshot.value) {
         // There are two scenarios then:
         // 1. It is the master branch
