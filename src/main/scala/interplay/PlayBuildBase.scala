@@ -2,7 +2,6 @@ package interplay
 
 import bintray.BintrayPlugin
 import bintray.BintrayPlugin.autoImport._
-import com.typesafe.sbt.SbtGit.GitKeys._
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys
 import interplay.Omnidoc.autoImport._
@@ -286,7 +285,8 @@ object PlayWhitesourcePlugin extends AutoPlugin {
         // There are two scenarios then:
         // 1. It is the master branch
         // 2. It is a release branch (2.6.x, 2.5.x, etc)
-        if (gitCurrentBranch.value == "master") {
+        val branch = getCurrentGitBranch()
+        if (branch == "master") {
           "master"
         } else {
           // If it is not "master", then it is a release branch
@@ -305,6 +305,10 @@ object PlayWhitesourcePlugin extends AutoPlugin {
       }
     }
   )
+
+  // Run git command rather than using sbt-git/JGit, because JGit has a bug
+  // that prevents it from working with git worktrees: https://github.com/sbt/sbt/issues/2323
+  private def getCurrentGitBranch(): String = sbt.Process("git symbolic-ref --short HEAD").!!.trim
 }
 
 /**
