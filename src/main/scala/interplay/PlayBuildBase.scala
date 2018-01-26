@@ -2,7 +2,6 @@ package interplay
 
 import bintray.BintrayPlugin
 import bintray.BintrayPlugin.autoImport._
-import com.typesafe.sbt.SbtGit.GitKeys._
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys
 import interplay.Omnidoc.autoImport._
@@ -43,6 +42,15 @@ object PlayBuildBase extends AutoPlugin {
     val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
     val playCrossReleasePlugins = settingKey[Boolean]("Whether the sbt plugins should be cross released or not")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
+
+    // This is not using sbt-git because we need a more stable way to set
+    // the current branch in a more stable way, for example, we may want to
+    // get the current branch as "master" even if we are at a detached commit.
+    //
+    // This is useful when running tasks on Travis, where the builds runs in
+    // a detached commit. See the discussion here:
+    // https://github.com/travis-ci/travis-ci/issues/1701
+    val playCurrentBranch = settingKey[String]("The current branch for the project")
 
     /**
      * Plugins configuration for a Play sbt plugin. Use this in preference to PlaySbtPluginBase, because this will
@@ -98,6 +106,20 @@ object PlayBuildBase extends AutoPlugin {
       } else {
         Nil
       }
+    },
+
+    // Tries to automatically set playCurrentBranch setting by reading
+    // an environment variable or system property.
+    //
+    // Reading from a environment variable could be useful when running
+    // in CI which have this automatically configured, for example Travis:
+    // https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
+    playCurrentBranch := {
+      sys.env.get("CURRENT_BRANCH")
+    } orElse {
+      sys.props.get("currentBranch")
+    } getOrElse {
+      "master"
     },
 
     pomExtra := {
@@ -275,9 +297,10 @@ object PlayReleaseBase extends AutoPlugin {
 
 object PlayWhitesourcePlugin extends AutoPlugin {
 
-  override def requires: Plugins = WhiteSourcePlugin
-
+  override def requires: Plugins = WhiteSourcePlugin && PlayBuildBase
   override def trigger: PluginTrigger = allRequirements
+
+  import PlayBuildBase.autoImport._
 
   override lazy val projectSettings = Seq(
     whitesourceProduct := "Lightbend Reactive Platform",
@@ -286,7 +309,7 @@ object PlayWhitesourcePlugin extends AutoPlugin {
         // There are two scenarios then:
         // 1. It is the master branch
         // 2. It is a release branch (2.6.x, 2.5.x, etc)
-        if (gitCurrentBranch.value == "master") {
+        if (playCurrentBranch.value == "master") {
           "master"
         } else {
           // If it is not "master", then it is a release branch
