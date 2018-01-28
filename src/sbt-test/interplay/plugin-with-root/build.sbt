@@ -21,10 +21,47 @@ playBuildRepoName in ThisBuild := "mock"
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed
-  val contents = IO.read(file(args.head))
+  val filename = substVersions(sbtVersion.value, args.head)
   val expected = args.tail.mkString(" ")
-  if (!contents.contains(expected)) {
-    throw sys.error(s"File ${args.head} does not contain '$expected':\n$contents")
+  val contents: String = IO.read(file(filename))
+  if (contents.contains(expected)) {
+    println(s"Checked that $filename contains $expected")
+  } else {
+    throw sys.error(s"File $filename does not contain '$expected':\n$contents")
+  }
+}
+
+InputKey[Unit]("existsCustom") := {
+  val args = Def.spaceDelimited().parsed
+  val filename = substVersions(sbtVersion.value, args.head)
+  assert(args.tail.isEmpty)
+  val exists: Boolean = file(filename).exists()
+  if (exists) {
+    println(s"Checked that $filename exists")
+  } else {
+    throw sys.error(s"File $filename does not exist")
+  }
+}
+
+def substVersions(sbtVersion: String, str: String): String = {
+  val substitutions: Seq[(String, String)] = if (sbtVersion.startsWith("0.13.")) {
+    // Note: run 'OTHER_' substitutions first otherwise they won't work
+    Vector(
+      "OTHER_SBT_API" -> "1.0",
+      "OTHER_SCALA_API" -> "2.12",
+      "SBT_API" -> "0.13",
+      "SCALA_API" -> "2.10"
+    )
+  } else {
+    Vector(
+      "OTHER_SBT_API" -> "0.13",
+      "OTHER_SCALA_API" -> "2.10",
+      "SBT_API" -> "1.0",
+      "SCALA_API" -> "2.12"
+    )
+  }
+  substitutions.foldLeft(str) {
+    case (currStr, (target, replacement)) => currStr.replace(target, replacement)
   }
 }
 

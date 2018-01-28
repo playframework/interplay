@@ -1,3 +1,5 @@
+import interplay.PlaySbtCompat
+
 // What an actual project would look like
 lazy val `mock-sbt-plugin` = (project in file("."))
   .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
@@ -24,6 +26,7 @@ InputKey[Unit]("contains") := {
 }
 
 def common: Seq[Setting[_]] = Seq(
+  PlaySbtCompat.scriptedTask := PlaySbtCompat.scriptedTask.evaluated,
   PgpKeys.publishSigned := {
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
   },
