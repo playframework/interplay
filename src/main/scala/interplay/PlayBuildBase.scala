@@ -18,13 +18,13 @@ import sbtwhitesource.WhiteSourcePlugin.autoImport._
 object ScalaVersions {
   val scala210 = "2.10.7"
   val scala211 = "2.11.12"
-  val scala212 = "2.12.4"
+  val scala212 = "2.12.6"
   val scala213 = "2.13.0-M4"
 }
 
 object SbtVersions {
   val sbt013 = "0.13.17"
-  val sbt10 = "1.1.1"
+  val sbt10 = "1.1.6"
 }
 
 /**
