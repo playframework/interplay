@@ -1,7 +1,6 @@
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
   .enablePlugins(PlayRootProject)
-  .enablePlugins(ScriptedPlugin)
   .aggregate(`mock-sbt-plugin`)
   .settings(common: _*)
 
