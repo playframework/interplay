@@ -1,5 +1,6 @@
 lazy val `mock-library` = (project in file("."))
   .enablePlugins(PlayLibrary && PlayReleaseBase)
+  .enablePlugins(ScriptedPlugin)
   .settings(common: _*)
 
 playBuildRepoName in ThisBuild := "mock"
