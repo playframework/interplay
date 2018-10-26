@@ -19,7 +19,6 @@ lazy val `mock-root` = (project in file("."))
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
   .enablePlugins(PlaySbtPlugin)
-  .enablePlugins(ScriptedPlugin)
   .dependsOn(`mock-sbt-library`)
   .settings(common: _*)
   .settings(
