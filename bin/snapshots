@@ -83,7 +83,7 @@ echo --- twirl $TWIRL_VERSION
 echo
 
 cd $DEPLOY/twirl
-build $TWIRL_VERSION ++2.11.11 ++2.12.2 publish ++2.10.6 publish plugin/publish
+build $TWIRL_VERSION +publish
 
 echo
 echo --- play $PLAY_VERSION
@@ -111,7 +111,7 @@ echo --- play-ebean $PLAY_EBEAN_VERSION
 echo
 
 cd $DEPLOY/play-ebean
-build $PLAY_EBEAN_VERSION +publish plugin/publish
+build $PLAY_EBEAN_VERSION +publish
 
 echo
 echo --- play-slick $PLAY_SLICK_VERSION
