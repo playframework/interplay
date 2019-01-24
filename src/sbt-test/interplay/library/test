@@ -18,7 +18,6 @@ $ exec git diff
 > release with-defaults
 
 # Make sure publishSigned ran
-> contains target/scala-2.11/publish-version sonatype-staging:1.2.3
 > contains target/scala-2.12/publish-version sonatype-staging:1.2.3
 > contains target/scala-2.13.0-M5/publish-version sonatype-staging:1.2.3
 
