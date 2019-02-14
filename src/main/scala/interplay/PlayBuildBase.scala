@@ -17,7 +17,6 @@ import sbtwhitesource.WhiteSourcePlugin.autoImport._
 
 object ScalaVersions {
   val scala210 = "2.10.7"
-  val scala211 = "2.11.12"
   val scala212 = "2.12.8"
   val scala213 = "2.13.0-M5"
 }
@@ -228,7 +227,7 @@ object PlaySbtPluginBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq(ScalaVersions.scala211, scalaVersion.value, ScalaVersions.scala213),
+    crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala213),
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala212),
     playCrossBuildRootProject in ThisBuild := true
   )
@@ -358,7 +357,7 @@ object PlayRootProjectBase extends AutoPlugin {
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
-        Seq(ScalaVersions.scala211, ScalaVersions.scala212, ScalaVersions.scala213)
+        Seq(ScalaVersions.scala212, ScalaVersions.scala213)
       } else {
         Seq(ScalaVersions.scala210, ScalaVersions.scala212)
       }
