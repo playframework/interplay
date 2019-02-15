@@ -3,7 +3,7 @@ repository:
   topics: playframework, sbt, sbt-plugin, scala
   private: false
   has_issues: true
-  has_projects: true
+  has_projects: false
   # We don't need wiki since the documentation lives in playframework.com
   has_wiki: false
   has_downloads: true
@@ -17,30 +17,15 @@ teams:
     permission: admin
   - name: integrators
     permission: write
-  - name: write-bots
-    permission: write
 
 branches:
-  - name: master
+  - name: "*"
     protection:
       required_pull_request_reviews:
         required_approving_review_count: 1
         dismiss_stale_reviews: true
       # Require status checks to pass before merging
       required_status_checks:
-        # Require branches to be up to date before merging.
-        strict: true
-        # The list of status checks to require in order to merge into this branch
-        contexts: ["Travis CI - Pull Request", "typesafe-cla-validator"]
-  - name: "[0-9].*.x"
-    protection:
-      required_pull_request_reviews:
-        required_approving_review_count: 1
-        dismiss_stale_reviews: true
-      # Require status checks to pass before merging
-      required_status_checks:
-        # Require branches to be up to date before merging.
-        strict: true
         # The list of status checks to require in order to merge into this branch
         contexts: ["Travis CI - Pull Request", "typesafe-cla-validator"]
 
@@ -89,7 +74,6 @@ labels:
     oldname: ready
   - color: fbca04
     name: "status:to-review"
-    oldname: review
   - color: c5def5
     name: "topic:build/tests"
   - color: c5def5
