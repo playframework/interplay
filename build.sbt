@@ -44,7 +44,7 @@ scriptedLaunchOpts += {
 
 playBuildRepoName in ThisBuild := "interplay"
 
-sbtPlugin := true
+enablePlugins(SbtPlugin)
 
 // Used by CI to check that interplay is working. Note
 // that the scripted tests are cross-built; i.e. they are

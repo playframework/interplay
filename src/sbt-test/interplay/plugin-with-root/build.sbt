@@ -5,7 +5,7 @@ lazy val `mock-root` = (project in file("."))
   .settings(common: _*)
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
-  .enablePlugins(PlaySbtPlugin)
+  .enablePlugins(PlaySbtPlugin, SbtPlugin)
   .settings(common: _*)
   .settings(
     // Pass the file for the scripted test to write to so that we can check that it ran
