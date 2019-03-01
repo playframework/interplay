@@ -18,7 +18,7 @@ lazy val `mock-root` = (project in file("."))
   .aggregate(`mock-library`, `mock-sbt-plugin`) // has a sbt plugin that will be built together with root project
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
-  .enablePlugins(PlaySbtPlugin)
+  .enablePlugins(PlaySbtPlugin, SbtPlugin)
   .dependsOn(`mock-sbt-library`)
   .settings(common: _*)
   .settings(
