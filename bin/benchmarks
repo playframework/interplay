@@ -40,7 +40,7 @@ echo "Checking out branches and extracting versions..."
 
 pushd $DEPLOY
 
-checkout $DEPLOY/playframework/framework $BRANCH
+checkout $DEPLOY/playframework $BRANCH
 PLAY_VERSION=$(stamped base_version)
 
 export PLAY_VERSION
@@ -49,7 +49,7 @@ echo
 echo --- Running Play $PLAY_VERSION benchmark
 echo
 
-cd $DEPLOY/playframework/framework
+cd $DEPLOY/playframework
 build $PLAY_VERSION "Play-Microbenchmark/jmh:run -rf json -rff $DEPLOY/jmh-results/jmh-play-$PLAY_VERSION.json"
 
 # cleanup

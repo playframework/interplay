@@ -45,7 +45,7 @@ echo "Checking out branches and extracting versions..."
 
 pushd $DEPLOY
 
-checkout $DEPLOY/playframework/framework $BRANCH
+checkout $DEPLOY/playframework $BRANCH
 PLAY_VERSION=$(stamped base_version)
 
 checkout $DEPLOY/scalatestplus-play $BRANCH
@@ -89,7 +89,7 @@ echo
 echo --- play $PLAY_VERSION
 echo
 
-cd $DEPLOY/playframework/framework
+cd $DEPLOY/playframework
 build $PLAY_VERSION +publish
 
 echo
