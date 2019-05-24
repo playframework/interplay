@@ -13,6 +13,27 @@ addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
+scalacOptions ++= {
+    if (scalaVersion.value.startsWith("2.10")) {
+    Seq("-target:jvm-1.8")
+  } else {
+    Seq(
+      "-target:jvm-1.8",
+      "-Xlint",
+      "-Ywarn-unused:imports",
+      "-Xlint:nullary-unit",
+      "-Ywarn-dead-code",
+    )
+  }
+}
+
+javacOptions ++= Seq(
+  "-source", "1.8",
+  "-target", "1.8",
+  "-Xlint:deprecation",
+  "-Xlint:unchecked",
+)
+
 // The location of the scripted-plugin changed from sbt 1
 // onwards. The following conditional allows interplay to
 // be built as both an sbt 0.13 and sbt 1 plugin.

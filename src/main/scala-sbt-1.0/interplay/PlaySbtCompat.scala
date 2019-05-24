@@ -85,7 +85,6 @@ object PlaySbtCompat {
     // This code based on sbt.Defaults.docTaskSettings
     val cs: Compilers = Keys.compilers.value
     val s: TaskStreams = streams.value
-    val scalac: AnalyzingCompiler = cs.javaTools.asInstanceOf[AnalyzingCompiler]
     val cacheStoreFactory: CacheStoreFactory = optionalCache(cacheName).value
 
     val javadoc: IncDoc.JavaDoc = IncDoc.cachedJavadoc(label, cacheStoreFactory, cs.javaTools)

@@ -155,8 +155,6 @@ private object PlaySbtBuildBase extends AutoPlugin {
   override def trigger = noTrigger
   override def requires = PlayBuildBase
 
-  import PlayBuildBase.autoImport._
-
   private def choose[T](scalaBinVersion: String)(forScala210: T, forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
     case Some((2, 12)) => forScala212
     case _ => forScala210
