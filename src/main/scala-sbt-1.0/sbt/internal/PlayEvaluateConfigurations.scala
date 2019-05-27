@@ -4,7 +4,6 @@
 package sbt.internal
 
 import sbt._
-import sbt.internal._
 import sbt.compiler.Eval
 
 /**
