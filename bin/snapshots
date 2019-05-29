@@ -6,7 +6,6 @@
 #
 #   - playframework
 #   - scalatestplus-play
-#   - play-ebean
 #   - play-slick
 #   - twirl
 #   - omnidoc
@@ -50,9 +49,6 @@ PLAY_VERSION=$(stamped base_version)
 checkout $DEPLOY/scalatestplus-play $BRANCH
 SCALATESTPLUS_PLAY_VERSION=$(stamped base_version)
 
-checkout $DEPLOY/play-ebean $BRANCH
-PLAY_EBEAN_VERSION=$(stamped base_version)
-
 checkout $DEPLOY/play-slick $BRANCH
 PLAY_SLICK_VERSION=$(stamped base_version)
 
@@ -67,7 +63,6 @@ echo
 echo "               play: $PLAY_VERSION"
 echo " scalatestplus-play: $SCALATESTPLUS_PLAY_VERSION"
 echo "              anorm: $ANORM_VERSION"
-echo "         play-ebean: $PLAY_EBEAN_VERSION"
 echo "         play-slick: $PLAY_SLICK_VERSION"
 echo "              twirl: $TWIRL_VERSION"
 echo "            omnidoc: $PLAY_VERSION"
@@ -96,13 +91,6 @@ cd $DEPLOY/scalatestplus-play
 build $SCALATESTPLUS_PLAY_VERSION +publish
 
 echo
-echo --- play-ebean $PLAY_EBEAN_VERSION
-echo
-
-cd $DEPLOY/play-ebean
-build $PLAY_EBEAN_VERSION +publish
-
-echo
 echo --- play-slick $PLAY_SLICK_VERSION
 echo
 
@@ -123,7 +111,6 @@ cat - > ~/.interplay/$BRANCH/status.json <<STATUSJSON
   "versions": {
     "play": "$PLAY_VERSION",
     "scalatestplus-play": "$SCALATESTPLUS_PLAY_VERSION",
-    "play-ebean": "$PLAY_EBEAN_VERSION",
     "play-slick": "$PLAY_SLICK_VERSION",
     "twirl": "$TWIRL_VERSION"
   }
@@ -137,7 +124,6 @@ echo
 versions=""
 versions="$versions -Dplay.version=$PLAY_VERSION"
 versions="$versions -Dscalatestplus-play.version=$SCALATESTPLUS_PLAY_VERSION"
-versions="$versions -Dplay-ebean.version=$PLAY_EBEAN_VERSION"
 versions="$versions -Dplay-slick.version=$PLAY_SLICK_VERSION"
 versions="$versions -Dtwirl.version=$TWIRL_VERSION"
 
