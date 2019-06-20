@@ -225,8 +225,8 @@ object PlaySbtPluginBase extends AutoPlugin {
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
     javacOptions in doc := Seq("-source", "1.8"),
-    crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala213),
-    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala212),
+    crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala212),
+    scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala213),
     playCrossBuildRootProject in ThisBuild := true
   )
 }
