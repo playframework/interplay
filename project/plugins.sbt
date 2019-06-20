@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5")
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.0")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.5")
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.15")
 
 lazy val build = (project in file(".")).
