@@ -14,7 +14,11 @@ function checkout {
 
 # detect base version from version.sbt
 function base_version {
-  echo $(cat version.sbt | sed 's/version in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
+  if [ -f version.sbt ]; then
+    echo $(cat version.sbt | sed 's/version in ThisBuild := "\(.*\)-SNAPSHOT"/\1/')
+  else
+    git describe --tags --abbrev=0 --always
+  fi
 }
 
 # create a timestamped and git hashed version
