@@ -15,7 +15,7 @@ $ exec git branch -u origin/master
 $ exec git status
 $ exec git diff
 
-> release with-defaults
+> release cross with-defaults
 
 # Make sure publishSigned ran
 > contains target/scala-2.12/publish-version sonatype-staging:1.2.3

@@ -34,15 +34,9 @@ javacOptions ++= Seq(
   "-Xlint:unchecked",
 )
 
-// The location of the scripted-plugin changed from sbt 1
-// onwards. The following conditional allows interplay to
-// be built as both an sbt 0.13 and sbt 1 plugin.
 libraryDependencies += {
   val sbtVer = (sbtVersion in pluginCrossBuild).value
   CrossVersion.partialVersion(sbtVer) match {
-    case Some((0, _)) =>
-      // sbt 0.x plugins weren't cross-built
-      "org.scala-sbt" % "scripted-plugin" % sbtVer
     case Some((major, _)) if major >= 1 =>
       // sbt 1+ plugins are cross-built
       "org.scala-sbt" %% "scripted-plugin" % sbtVer

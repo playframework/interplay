@@ -42,5 +42,4 @@ lazy val build = (project in file(".")).
 // meta-build, we only need sbt 1.
 unmanagedSourceDirectories in Compile ++= Seq(
   baseDirectory.value.getParentFile / "src" / "main" / "scala",
-  baseDirectory.value.getParentFile / "src" / "main" / "scala-sbt-1.0"
 )

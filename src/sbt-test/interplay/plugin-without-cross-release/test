@@ -20,9 +20,6 @@ $ exists target/scripted-ran
 # Make sure publishSigned ran
 > contains target/scala-SCALA_API/sbt-SBT_API/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock-without-cross-release:1.2.3
 
-# Make sure it does not run cross release
--> existsCustom target/scala-OTHER_SCALA_API/sbt-OTHER_SBT_API/publish-version
-
 # Make sure bintrayRelease ran
 > contains target/bintray-release-version 1.2.3
 

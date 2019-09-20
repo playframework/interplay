@@ -20,7 +20,6 @@ $ exists mock-sbt-plugin/target/scripted-ran
 # Make sure publishSigned ran on every project with the right publish settings
 > contains target/scala-2.12/publish-version no-publish:1.2.3
 > contains target/scala-2.13/publish-version no-publish:1.2.3
-> contains mock-sbt-plugin/target/scala-2.10/sbt-0.13/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
 > contains mock-sbt-plugin/target/scala-2.12/sbt-1.0/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
 > contains mock-library/target/scala-2.12/publish-version sonatype-staging:1.2.3
 > contains mock-library/target/scala-2.13/publish-version sonatype-staging:1.2.3

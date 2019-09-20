@@ -73,22 +73,11 @@ InputKey[Unit]("existsCustom") := {
 }
 
 def substVersions(sbtVersion: String, str: String): String = {
-  val substitutions: Seq[(String, String)] = if (sbtVersion.startsWith("0.13.")) {
-    // Note: run 'OTHER_' substitutions first otherwise they won't work
+  val substitutions: Seq[(String, String)] =
     Vector(
-      "OTHER_SBT_API" -> "1.0",
-      "OTHER_SCALA_API" -> "2.12",
-      "SBT_API" -> "0.13",
-      "SCALA_API" -> "2.10"
-    )
-  } else {
-    Vector(
-      "OTHER_SBT_API" -> "0.13",
-      "OTHER_SCALA_API" -> "2.10",
       "SBT_API" -> "1.0",
       "SCALA_API" -> "2.12"
     )
-  }
   substitutions.foldLeft(str) {
     case (currStr, (target, replacement)) => currStr.replace(target, replacement)
   }
