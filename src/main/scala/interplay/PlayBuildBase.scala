@@ -16,13 +16,11 @@ import sbtwhitesource.WhiteSourcePlugin
 import sbtwhitesource.WhiteSourcePlugin.autoImport._
 
 object ScalaVersions {
-  val scala210 = "2.10.7"
   val scala212 = "2.12.10"
   val scala213 = "2.13.0"
 }
 
 object SbtVersions {
-  val sbt013 = "0.13.18"
   val sbt10 = "1.2.8"
 }
 
@@ -155,23 +153,19 @@ private object PlaySbtBuildBase extends AutoPlugin {
   override def trigger = noTrigger
   override def requires = PlayBuildBase
 
-  private def choose[T](scalaBinVersion: String)(forScala210: T, forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
-    case Some((2, 12)) => forScala212
-    case _ => forScala210
+  private def choose[T](scalaBinVersion: String)(forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
+    case _ => forScala212
   }
 
   override def projectSettings = Seq(
-    crossScalaVersions := Seq(ScalaVersions.scala210, ScalaVersions.scala212),
+    crossScalaVersions := Seq(ScalaVersions.scala212),
     sbtVersion in pluginCrossBuild := choose(scalaBinaryVersion.value)(
-      forScala210 = SbtVersions.sbt013,
       forScala212 = SbtVersions.sbt10
     ),
     javacOptions in compile ++= choose(scalaBinaryVersion.value)(
-      forScala210 = Seq("-source", "1.6", "-target", "1.6"),
       forScala212 = Seq("-source", "1.8", "-target", "1.8")
     ),
     javacOptions in doc := choose(scalaBinaryVersion.value)(
-      forScala210 = Seq("-source", "1.6"),
       forScala212 = Seq("-source", "1.8")
     )
   )
@@ -357,7 +351,7 @@ object PlayRootProjectBase extends AutoPlugin {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
         Seq(ScalaVersions.scala212, ScalaVersions.scala213)
       } else {
-        Seq(ScalaVersions.scala210, ScalaVersions.scala212)
+        Seq(ScalaVersions.scala212)
       }
     }
   )
