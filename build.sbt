@@ -1,9 +1,12 @@
+import _root_.interplay.ScalaVersions._
 import buildinfo.BuildInfo._
 
 lazy val interplay = (project in file("."))
-  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
+  .enablePlugins(PlaySbtPlugin && PlayReleaseBase, SbtPlugin)
 
 description := "Base build plugin for all Play modules"
+
+crossScalaVersions -= scala210 // drop cross-build to sbt 0.13 (which uses Scala 2.10)
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
@@ -13,19 +16,13 @@ addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
-scalacOptions ++= {
-    if (scalaVersion.value.startsWith("2.10")) {
-    Seq("-target:jvm-1.8")
-  } else {
-    Seq(
-      "-target:jvm-1.8",
-      "-Xlint",
-      "-Ywarn-unused:imports",
-      "-Xlint:nullary-unit",
-      "-Ywarn-dead-code",
-    )
-  }
-}
+scalacOptions ++= Seq(
+  "-target:jvm-1.8",
+  "-Xlint",
+  "-Ywarn-unused:imports",
+  "-Xlint:nullary-unit",
+  "-Ywarn-dead-code",
+)
 
 javacOptions ++= Seq(
   "-source", "1.8",
@@ -33,23 +30,6 @@ javacOptions ++= Seq(
   "-Xlint:deprecation",
   "-Xlint:unchecked",
 )
-
-// The location of the scripted-plugin changed from sbt 1
-// onwards. The following conditional allows interplay to
-// be built as both an sbt 0.13 and sbt 1 plugin.
-libraryDependencies += {
-  val sbtVer = (sbtVersion in pluginCrossBuild).value
-  CrossVersion.partialVersion(sbtVer) match {
-    case Some((0, _)) =>
-      // sbt 0.x plugins weren't cross-built
-      "org.scala-sbt" % "scripted-plugin" % sbtVer
-    case Some((major, _)) if major >= 1 =>
-      // sbt 1+ plugins are cross-built
-      "org.scala-sbt" %% "scripted-plugin" % sbtVer
-    case unknown =>
-      sys.error(s"Can't work out scripted plugin for sbt version: $sbtVer (partial version: $unknown)")
-  }
-}
 
 playBuildExtraTests := {
   scripted.toTask("").value

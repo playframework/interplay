@@ -2,8 +2,8 @@ package interplay
 
 import bintray.BintrayPlugin
 import bintray.BintrayPlugin.autoImport._
-import com.typesafe.sbt.SbtPgp
-import com.typesafe.sbt.pgp.PgpKeys
+import com.jsuereth.sbtpgp.SbtPgp
+import com.jsuereth.sbtpgp.PgpKeys
 import interplay.Omnidoc.autoImport._
 import sbt.Keys._
 import sbt._
