@@ -296,7 +296,7 @@ object PlayReleaseBase extends AutoPlugin {
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeRelease")),
+        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
         setNextVersion,
         commitNextVersion,
         pushChanges
@@ -401,6 +401,6 @@ object PlaySonatypeBase extends AutoPlugin {
 
   override def projectSettings = Seq(
     sonatypeProfileName := "com.typesafe",
-    publishTo := Some(sonatypeDefaultResolver.value)
+    publishTo := sonatypePublishToBundle.value,
   )
 }
