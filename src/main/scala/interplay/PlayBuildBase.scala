@@ -156,8 +156,8 @@ private object PlaySbtBuildBase extends AutoPlugin {
   override def requires = PlayBuildBase
 
   private def choose[T](scalaBinVersion: String)(forScala210: T, forScala212: T) = CrossVersion.partialVersion(scalaBinVersion) match {
-    case Some((2, 12)) => forScala212
-    case _ => forScala210
+    case Some((2, 10)) => forScala210
+    case _ => forScala212
   }
 
   override def projectSettings = Seq(
