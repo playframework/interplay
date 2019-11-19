@@ -2,14 +2,14 @@ import java.util.Locale
 
 libraryDependencies ++= Seq(
   "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value,
-  "com.typesafe" % "config" % "1.3.4"
+  "com.typesafe" % "config" % "1.4.0"
 )
 
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.12")
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5")
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.7")
-addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.17")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8")
+addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.18")
 
 lazy val build = (project in file(".")).
   enablePlugins(BuildInfoPlugin).
