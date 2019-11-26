@@ -1,16 +1,25 @@
 language: scala
-dist: trusty
-sudo: false
-group: beta
+
+env:
+  - TRAVIS_JDK=8
+  - TRAVIS_JDK=11
+
+before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
+install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
+
 script: sbt validate
-jdk:
-- oraclejdk8
+
 cache:
   directories:
   - "$HOME/.ivy2/cache"
+  - "$HOME/.jabba/jdk"
+  - "$HOME/.sbt"
+
 before_cache:
-- rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/interplay
-- find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+  - rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/interplay
+  - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
+  - find $HOME/.sbt  -name "*.lock"               -delete
+
 notifications:
   slack:
     secure: g1CnQB4HlPTMLYPAaiAA8gV1iI4ezQWHM5auH9UAZXJP+5chmsep9wI2h+Ne3nq5ZfD+gsKIg1ea3FoAxRL7JGUKXOSUJbKmPNc1lePQVyh2eBPPaaYt8ERXrXutmI8pndADxYztRIzzs6oPtRZckcYa7McRZmiRMPGiSLSu2jA=
