@@ -9,6 +9,9 @@ install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx
 
 script: sbt validate
 
+git:
+  depth: false # Avoid sbt-dynver not seeing the tag
+
 cache:
   directories:
   - "$HOME/.ivy2/cache"
