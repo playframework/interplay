@@ -18,7 +18,6 @@ $ exec git branch -u origin/master
 $ exists mock-sbt-plugin/target/scripted-ran
 
 # Make sure publishSigned ran on every project with the right publish settings
-> contains target/scala-2.12/publish-version no-publish:1.2.3
 > contains mock-sbt-plugin/target/scala-2.12/sbt-1.0/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
 > contains mock-library/target/scala-2.12/publish-version sonatype-local-bundle:1.2.3
 > contains mock-library/target/scala-2.13/publish-version sonatype-local-bundle:1.2.3
