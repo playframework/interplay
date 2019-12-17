@@ -27,6 +27,5 @@ import interplay.Omnidoc.autoImport.omnidocTagPrefix
     javacOptions in doc := Seq("-source", "1.8"),
     crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala212),
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala213),
-    playCrossBuildRootProject in ThisBuild := true
   )
 }

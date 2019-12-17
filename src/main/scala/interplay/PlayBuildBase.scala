@@ -32,8 +32,6 @@ object PlayBuildBase extends AutoPlugin {
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
     val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
     val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
-    val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
-    val playCrossReleasePlugins = settingKey[Boolean]("Whether the sbt plugins should be cross released or not")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
     // This is not using sbt-git because we need a more stable way to set

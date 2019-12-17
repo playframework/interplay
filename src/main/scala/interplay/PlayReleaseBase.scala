@@ -25,8 +25,6 @@ object PlayReleaseBase extends AutoPlugin {
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     releaseTagName := (version in ThisBuild).value,
-    playCrossReleasePlugins := true,
-    releaseCrossBuild := (playCrossBuildRootProject in ThisBuild).?.value.exists(identity),
     releaseProcess := {
       import ReleaseTransformations._
 
@@ -41,17 +39,14 @@ object PlayReleaseBase extends AutoPlugin {
         checkSnapshotDependencies,
         inquireVersions,
         runClean,
-
-        if (playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+test")
-        else runTest,
+        releaseStepCommandAndRemaining("+test"),
 
         releaseStepTask(playBuildExtraTests in thisProjectRef.value),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
 
-        if (playCrossReleasePlugins.value) releaseStepCommandAndRemaining("+publishSigned")
-        else publishArtifacts,
+        releaseStepCommandAndRemaining("+publishSigned"),
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
         ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
