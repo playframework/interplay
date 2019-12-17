@@ -38,8 +38,6 @@ lazy val interplay = (project in file("."))
 
 description := "Base build plugin for all Play modules"
 
-crossScalaVersions -= scala210 // drop cross-build to sbt 0.13 (which uses Scala 2.10)
-
 addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % sbtBintrayVersion)
