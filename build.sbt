@@ -1,8 +1,40 @@
 import _root_.interplay.ScalaVersions._
 import buildinfo.BuildInfo._
 
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+dynverVTagPrefix in ThisBuild := false
+
+// Sanity-check: assert that version comes from a tag (e.g. not a too-shallow clone)
+// https://github.com/dwijnand/sbt-dynver/#sanity-checking-the-version
+Global / onLoad := (Global / onLoad).value.andThen { s =>
+  val v = version.value
+  if (dynverGitDescribeOutput.value.hasNoTags)
+    throw new MessageOnlyException(
+      s"Failed to derive version from git tags. Maybe run `git fetch --unshallow`? Version: $v"
+    )
+  s
+}
+
+
 lazy val interplay = (project in file("."))
   .enablePlugins(PlaySbtPlugin && PlayReleaseBase, SbtPlugin)
+  .settings(
+    Seq(
+      // Release settings
+      releaseProcess := {
+        import ReleaseTransformations._
+        Seq[ReleaseStep](
+          checkSnapshotDependencies,
+          runClean,
+          releaseStepCommandAndRemaining("+test"),
+          releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+          releaseStepCommandAndRemaining("+publishSigned"),
+          releaseStepTask(bintrayRelease in thisProjectRef.value),
+          pushChanges
+        )
+      }
+    )
+  )
 
 description := "Base build plugin for all Play modules"
 
