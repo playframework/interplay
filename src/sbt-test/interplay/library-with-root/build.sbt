@@ -1,12 +1,12 @@
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
-  .enablePlugins(PlayRootProject)
+  .enablePlugins(PlayRootProject) // PlayRootProjects are not published
   .aggregate(`mock-library`)
-  .settings(common: _*)
+  .settings(common)
 
 lazy val `mock-library` = (project in file("mock-library"))
   .enablePlugins(PlayLibrary)
-  .settings(common: _*)
+  .settings(common)
 
 playBuildRepoName in ThisBuild := "mock"
 
