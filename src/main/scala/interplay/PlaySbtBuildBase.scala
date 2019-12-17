@@ -1,7 +1,7 @@
 package interplay
 
-import sbt.AutoPlugin
-import sbt.Keys.{ javacOptions, crossScalaVersions, sbtVersion, compile, doc, pluginCrossBuild }
+import sbt._
+import sbt.Keys._
 
 private object PlaySbtBuildBase extends AutoPlugin {
 
@@ -9,6 +9,7 @@ private object PlaySbtBuildBase extends AutoPlugin {
   override def requires = PlayBuildBase
 
   override def projectSettings = Seq(
+    scalaVersion := ScalaVersions.scala212,
     crossScalaVersions := Seq(ScalaVersions.scala212),
     sbtVersion in pluginCrossBuild := SbtVersions.sbt10,
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
