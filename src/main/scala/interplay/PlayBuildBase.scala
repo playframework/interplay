@@ -61,12 +61,12 @@ object PlayBuildBase extends AutoPlugin {
      * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
      * also disable the Bintray plugin.
      */
-    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin &&! PlaySbtCompat.optScriptedAutoPlugin
+    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.
      */
-    def PlayRootProject: Plugins = PlayRootProjectBase &&! PlaySbtCompat.optScriptedAutoPlugin
+    def PlayRootProject: Plugins = PlayRootProjectBase
 
     /**
      * Plugins configuration for a Play project that doesn't get published.
