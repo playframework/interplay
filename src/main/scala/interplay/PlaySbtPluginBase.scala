@@ -1,7 +1,9 @@
 package interplay
 
-import sbt.{ AutoPlugin, ThisBuild, Opts }
-import sbt.Keys.{sbtPlugin,publishTo,version,isSnapshot,publishMavenStyle}
+import sbt._
+import sbt.Keys._
+import sbt.plugins.SbtPlugin
+import sbt.ScriptedPlugin.autoImport._
 
 /**
  * Base Plugin for Play sbt plugins.
@@ -12,13 +14,12 @@ import sbt.Keys.{sbtPlugin,publishTo,version,isSnapshot,publishMavenStyle}
 object PlaySbtPluginBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBintrayBase && PlayBuildBase && PlaySbtBuildBase
+  override def requires = PlayBintrayBase && PlayBuildBase && PlaySbtBuildBase && SbtPlugin
 
   import PlayBuildBase.autoImport._
 
-  override def projectSettings = PlaySbtCompat.scriptedSettings /* FIXME: Not needed in sbt 1 */ ++ Seq(
-    PlaySbtCompat.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
-    sbtPlugin := true,
+  override def projectSettings = Seq(
+    scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
     publishTo := {
       val currentValue = publishTo.value
       if (isSnapshot.value) {

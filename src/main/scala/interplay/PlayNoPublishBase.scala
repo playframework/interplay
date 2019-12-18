@@ -5,9 +5,6 @@ import sbt.Keys._
 import sbt.Resolver
 import com.jsuereth.sbtpgp.PgpKeys
 
-/**
- * 
- */
 object PlayNoPublishBase extends AutoPlugin {
   override def trigger = noTrigger
   override def requires = PlayBuildBase

@@ -32,9 +32,8 @@ object PlayBuildBase extends AutoPlugin {
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
     val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
     val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
-    val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
-    val playCrossReleasePlugins = settingKey[Boolean]("Whether the sbt plugins should be cross released or not")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
+    val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
 
     // This is not using sbt-git because we need a more stable way to set
     // the current branch in a more stable way, for example, we may want to
@@ -61,12 +60,12 @@ object PlayBuildBase extends AutoPlugin {
      * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
      * also disable the Bintray plugin.
      */
-    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin &&! PlaySbtCompat.optScriptedAutoPlugin
+    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.
      */
-    def PlayRootProject: Plugins = PlayRootProjectBase &&! PlaySbtCompat.optScriptedAutoPlugin
+    def PlayRootProject: Plugins = PlayRootProjectBase
 
     /**
      * Plugins configuration for a Play project that doesn't get published.

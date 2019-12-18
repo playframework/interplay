@@ -17,7 +17,7 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
 
 
 lazy val interplay = (project in file("."))
-  .enablePlugins(PlaySbtPlugin && PlayReleaseBase, SbtPlugin)
+  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
   .settings(
     Seq(
       // Release settings
@@ -37,8 +37,6 @@ lazy val interplay = (project in file("."))
   )
 
 description := "Base build plugin for all Play modules"
-
-crossScalaVersions -= scala210 // drop cross-build to sbt 0.13 (which uses Scala 2.10)
 
 addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)

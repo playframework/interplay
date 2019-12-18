@@ -32,16 +32,6 @@ lazy val build = (project in file(".")).
 // part of the meta-build (but not published) and then *again* as part
 // of the proper build (where it is properly cross-compiled and
 // published).
-//
-// Note that for the meta-build we only need to include the files in
-// `scala-sbt-1.0` directory, not the files in the `scala-sbt-0.13`
-// directory. This is because the meta-build in the `project`
-// directory is only built with sbt 1 (the value set in the
-// build.properties file). In a later stage of the sbt build, when we
-// do the "proper build" in the root directory, interplay will be
-// cross-compiled for both sbt 1 and sbt 0.13. At this stage, for the
-// meta-build, we only need sbt 1.
 unmanagedSourceDirectories in Compile ++= Seq(
-  baseDirectory.value.getParentFile / "src" / "main" / "scala",
-  baseDirectory.value.getParentFile / "src" / "main" / "scala-sbt-1.0"
+  baseDirectory.value.getParentFile / "src" / "main" / "scala"
 )

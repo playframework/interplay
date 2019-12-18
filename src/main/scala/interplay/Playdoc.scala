@@ -2,6 +2,7 @@ package interplay
 
 import sbt._
 import sbt.Keys._
+import sbt.io.IO
 
 object Playdoc extends AutoPlugin {
 
@@ -12,7 +13,7 @@ object Playdoc extends AutoPlugin {
   }
 
   import autoImport._
-  
+
   override def requires = sbt.plugins.JvmPlugin
 
   override def trigger = noTrigger
@@ -23,7 +24,7 @@ object Playdoc extends AutoPlugin {
       playdocDirectory := (baseDirectory in ThisBuild).value / "docs" / "manual",
       mappings in playdocPackage := {
         val base: File = playdocDirectory.value
-        PlaySbtCompat.PathCompat.allPaths(base).pair(PlaySbtCompat.PathCompat.relativeTo(base.getParentFile))
+        base.allPaths.pair(IO.relativize(base.getParentFile(), _))
       },
       artifactClassifier in playdocPackage := Some("playdoc"),
       artifact in playdocPackage ~= { _.withConfigurations(Vector(Docs)) }
