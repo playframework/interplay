@@ -10,8 +10,11 @@ lazy val common: Seq[Setting[_]] = Seq(
 
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
-  .settings(common)
-  .enablePlugins(PlayRootProject) // By default PlayRootProjects are not published
+  .settings(
+    common,
+    playCrossBuildRootProject in ThisBuild := true // activates cross build for Scala 2.12 and 2.13
+  )
+  .enablePlugins(PlayRootProject)
   .aggregate(`mock-library`, `mock-sbt-plugin`) // has a sbt plugin that will be built together with root project
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))

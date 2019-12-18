@@ -33,6 +33,7 @@ object PlayBuildBase extends AutoPlugin {
     val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
     val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
+    val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
 
     // This is not using sbt-git because we need a more stable way to set
     // the current branch in a more stable way, for example, we may want to

@@ -3,7 +3,7 @@ package interplay
 import sbt._
 import sbt.Keys._
 
-private object PlaySbtBuildBase extends AutoPlugin {
+private[interplay] object PlaySbtBuildBase extends AutoPlugin {
 
   override def trigger = noTrigger
   override def requires = PlayBuildBase

@@ -1,6 +1,6 @@
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
-  .enablePlugins(PlayRootProject) // PlayRootProjects are not published
+  .enablePlugins(PlayRootProject)
   .aggregate(`mock-library`)
   .settings(common)
 
