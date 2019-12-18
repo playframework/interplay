@@ -4,6 +4,11 @@ import sbt._
 import sbt.Keys._
 import sbt.Package.ManifestAttributes
 
+
+/** 
+  * This AutoPlugin adds the `Omnidoc-Source-URL` key on the MANIFEST.MF of artifact-sources.jar so 
+  * later Omnidoc can use that value to link scaladocs to GitHub sources. 
+  */
 object Omnidoc extends AutoPlugin {
 
   object autoImport {
