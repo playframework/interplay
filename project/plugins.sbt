@@ -10,6 +10,7 @@ addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8.1")
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.18")
+addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.0.0")
 
 lazy val build = (project in file(".")).
   enablePlugins(BuildInfoPlugin).
