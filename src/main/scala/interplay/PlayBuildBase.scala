@@ -14,19 +14,21 @@ import com.jsuereth.sbtpgp.PgpKeys
  */
 object PlayBuildBase extends AutoPlugin {
   override def trigger = allRequirements
+
   override def requires = SbtPgp && JvmPlugin
 
   /** Helper for operations on plugins. */
   private implicit class EnhancedPlugins(val plugins: Plugins) extends AnyVal {
     /** Disable the given plugin. */
     def &&!(plugin: AutoPlugin): Plugins = plugins && PluginsAccessor.exclude(plugin)
+
     /** Disable the given plugin, if it's defined. */
     def &&!(optPlugin: Option[AutoPlugin]): Plugins = optPlugin match {
       case None => plugins
       case Some(plugin) => this &&! plugin
     }
   }
-  
+
   object autoImport {
     val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
@@ -84,6 +86,8 @@ object PlayBuildBase extends AutoPlugin {
   override def projectSettings = Seq(
     // General settings
     organization := "com.typesafe.play",
+    organizationName := "Lightbend Inc.",
+    organizationHomepage := Some(url("https://www.lightbend.com/")),
     homepage := Some(url(s"https://github.com/playframework/${(playBuildRepoName in ThisBuild).value}")),
     licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
 
@@ -114,20 +118,15 @@ object PlayBuildBase extends AutoPlugin {
       "master"
     },
 
-    pomExtra := {
+    scmInfo := {
       val repoName = (playBuildRepoName in ThisBuild).value
-      <scm>
-        <url>https://github.com/playframework/{repoName}</url>
-        <connection>scm:git:git@github.com:playframework/{repoName}.git</connection>
-      </scm>
-        <developers>
-          <developer>
-            <id>playframework</id>
-            <name>Play Framework Team</name>
-            <url>https://github.com/playframework</url>
-          </developer>
-        </developers>
+      Some(ScmInfo(url(s"https://github.com/playframework/$repoName"), "scm:git:git@github.com:playframework/{repoName}.git"))
     },
+    developers += Developer("contributors",
+      "Contributors",
+      "https://gitter.im/playframework/contributors",
+      url("https://github.com/playframework")),
+
     pomIncludeRepository := { _ => false }
   )
 }

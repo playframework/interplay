@@ -10,6 +10,7 @@ object PlayNoPublishBase extends AutoPlugin {
   override def requires = PlayBuildBase
 
   override def projectSettings = Seq(
+    publish / skip := true,
     PgpKeys.publishSigned := {},
     publish := {},
     publishLocal := {},

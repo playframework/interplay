@@ -6,8 +6,6 @@ Interplay is a set of sbt plugins for Play builds, sharing common configuration 
 
 ## Usage
 
-Ensure you're using sbt 0.13.15, by setting `sbt.version` in `project/build.properties`.
-
 Add the interplay plugin to `project/plugins.sbt`:
 
 ```scala
