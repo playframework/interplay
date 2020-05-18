@@ -1,7 +1,6 @@
 language: scala
 
 env:
-  - TRAVIS_JDK=11
   global:
     # encrypt with: travis encrypt --pro BINTRAY_USER=...
     - secure: "KpeZbNlGlj0X3WkThPteLSci8I6e43k1Tpc5sW2Iz/SGEzbrdZPoF74LNzXjE1wejFIx8z5wivXPHeSJoE8WYwP7q0PfUmair8mgAZtSHSiJyhacghNAeXc0/sl4jv4WYLqm7j8LQr6henj+GWbNMDc31+8pMJshjY0S89Nyis8="
@@ -9,7 +8,7 @@ env:
     - secure: "dZpSmU/QhB0NU2qVNGcKFHp9y8bac07UoLlvV7vnC3pzpJFFBrVgoaNY6uB8Eg9dXxkfUgbEyXb0G7OEUXswX4K+xbHXXwZIw3lAwG6jXgpf9CMSA+Ty3nI1U+Bp/OwGOUe1iWxCtvBlBLf8knJyDAFU7bCABbi73afGRK8XvUw="
 
 before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
-install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
+install: jabba install "adopt@~1.11.0-0" && jabba use "$_" && java -Xmx32m -version
 
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
@@ -27,11 +26,13 @@ jobs:
 
 stages:
   - name: check
+
   - name: publish
     if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
 cache:
   directories:
+  - "$HOME/.cache/coursier"
   - "$HOME/.ivy2/cache"
   - "$HOME/.jabba/jdk"
   - "$HOME/.sbt"
