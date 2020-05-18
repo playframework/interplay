@@ -14,6 +14,8 @@ install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx
 git:
   depth: false # Avoid sbt-dynver not seeing the tag
 
+script: java -version
+
 jobs:
   include:
     - stage: check
