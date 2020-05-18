@@ -62,7 +62,20 @@ object PlayBuildBase extends AutoPlugin {
      * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
      * also disable the Bintray plugin.
      */
-    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin
+    @deprecated("use PlayLibraryToSonatype instead", since="3.0.1")
+    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin && PlaySonatypeBase
+
+    /**
+     * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
+     * also disable the Bintray plugin.
+     */
+    def PlayLibraryToSonatype: Plugins = PlayLibraryBase &&! BintrayPlugin && PlaySonatypeBase
+
+    /**
+     * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
+     * also disable the Bintray and Sonatype plugins.
+     */
+    def PlayLibraryToBintray: Plugins = PlayLibraryBase && PlayLibraryBintrayBase &&! Sonatype
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.

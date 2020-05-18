@@ -1,9 +1,10 @@
 package interplay
 
-import sbt.AutoPlugin
+import interplay.PlayBuildBase.autoImport.playBuildPromoteSonatype
+import sbt._
 import sbt.Keys.publishTo
 import xerial.sbt.Sonatype
-import xerial.sbt.Sonatype.autoImport.{ sonatypePublishToBundle, sonatypeProfileName }
+import xerial.sbt.Sonatype.autoImport.{sonatypeProfileName, sonatypePublishToBundle}
 
 /**
  * Base plugin for all projects that publish to sonatype
@@ -13,6 +14,7 @@ object PlaySonatypeBase extends AutoPlugin {
   override def requires = Sonatype
 
   override def projectSettings = Seq(
+    playBuildPromoteSonatype in ThisBuild := true,
     sonatypeProfileName := "com.typesafe",
     publishTo := sonatypePublishToBundle.value,
   )

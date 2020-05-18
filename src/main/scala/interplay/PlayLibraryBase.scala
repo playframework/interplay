@@ -12,15 +12,14 @@ import interplay.Omnidoc.autoImport.omnidocTagPrefix
  * - Includes omnidoc configuration
  * - Cross builds the project
  */
-  object PlayLibraryBase extends AutoPlugin {
+object PlayLibraryBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlaySonatypeBase && Omnidoc
+  override def requires = PlayBuildBase && Omnidoc
 
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true,
     omnidocGithubRepo := s"playframework/${(playBuildRepoName in ThisBuild).value}",
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),

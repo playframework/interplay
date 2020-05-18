@@ -1,6 +1,6 @@
 package interplay
 
-import sbt.{AutoPlugin,ThisBuild }
+import sbt.{AutoPlugin, ThisBuild}
 import bintray.BintrayPlugin
 import bintray.BintrayPlugin.autoImport._
 
