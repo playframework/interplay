@@ -1,6 +1,5 @@
 package interplay
 
-import interplay.PlayBuildBase.autoImport.playBuildPromoteSonatype
 import sbt._
 import sbt.Keys.publishTo
 import xerial.sbt.Sonatype
