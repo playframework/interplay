@@ -15,6 +15,7 @@ object PlayLibraryBintrayBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
+    playBuildPromoteSonatype in ThisBuild := false,
     playBuildPromoteBintray in ThisBuild := true,
     bintrayOrganization := Some("playframework"),
     bintrayRepository := (if (isSnapshot.value) "snapshots" else "maven"),

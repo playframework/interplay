@@ -14,7 +14,6 @@ object PlaySonatypeBase extends AutoPlugin {
   override def requires = Sonatype
 
   override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true,
     sonatypeProfileName := "com.typesafe",
     publishTo := sonatypePublishToBundle.value,
   )
