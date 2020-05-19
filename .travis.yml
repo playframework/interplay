@@ -22,9 +22,9 @@ jobs:
     - stage: check
       script: sbt validate
 
-    - stage: publish
-      name: "Publish artifacts to Bintray"
-      script: sbt publish
+    - stage: release
+      name: "Release artifacts to Bintray"
+      script: sbt release
 
 stages:
   - name: check

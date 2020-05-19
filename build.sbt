@@ -28,7 +28,7 @@ lazy val interplay = (project in file("."))
           runClean,
           releaseStepCommandAndRemaining("+test"),
           releaseStepTask(playBuildExtraTests in thisProjectRef.value),
-          releaseStepCommandAndRemaining("+publishSigned"),
+//          releaseStepCommandAndRemaining("+publishSigned"),
           releaseStepTask(bintrayRelease in thisProjectRef.value),
           pushChanges
         )
