@@ -1,0 +1,44 @@
+# Setup local git repo
+$ exec git init
+# Need to configure name/email since on build server it's not set
+$ exec git config user.email sbt@example.com
+$ exec git config user.name sbt
+$ exec git add .
+$ exec git commit -m commit
+
+# Setup remote git repo in target directory
+$ exec git init --bare $PWD/target/remote
+$ exec git remote add origin $PWD/target/remote
+$ exec git push origin master
+$ exec git branch -u origin/master
+
+> release with-defaults
+
+# Make sure scripted tests ran
+$ exists mock-sbt-plugin/target/scripted-ran
+
+# Make sure publishSigned ran on every project with the right publish settings
+> contains target/scala-2.12/publish-version no-publish:1.2.3
+> contains target/scala-2.13/publish-version no-publish:1.2.3
+> contains mock-sbt-plugin/target/scala-2.12/sbt-1.0/publish-version Bintray-Sbt-Publish-playframework-sbt-plugin-releases-mock:1.2.3
+> contains mock-library/target/scala-2.12/publish-version Bintray-Maven-Publish-playframework-maven-mock:1.2.3
+> contains mock-library/target/scala-2.13/publish-version Bintray-Maven-Publish-playframework-maven-mock:1.2.3
+> contains mock-sbt-library/target/scala-2.12/publish-version sonatype-local-bundle:1.2.3
+
+# Make sure bintrayRelease ran only in the root project
+> contains target/bintray-release-version 1.2.3
+-$ exists mock-sbt-plugin/target/bintray-release-version
+-$ exists mock-sbt-library/target/bintray-release-version
+-$ exists mock-library/target/bintray-release-version
+
+# Make sure sonatypeRelease ran only in the root project
+> contains target/sonatype-release-version 1.2.3
+-$ exists mock-sbt-plugin/target/sonatype-release-version
+-$ exists mock-sbt-library/target/sonatype-release-version
+-$ exists mock-library/target/sonatype-release-version
+
+# Make sure the version was updated
+> contains version.sbt 1.2.4-SNAPSHOT
+
+# Make sure the git repo was tagged
+$ exec git show 1.2.3
