@@ -38,17 +38,6 @@ object PlayBuildBase extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = SbtPgp && JvmPlugin
 
-  /** Helper for operations on plugins. */
-  private implicit class EnhancedPlugins(val plugins: Plugins) extends AnyVal {
-    /** Disable the given plugin. */
-    def &&!(plugin: AutoPlugin): Plugins = plugins && PluginsAccessor.exclude(plugin)
-    /** Disable the given plugin, if it's defined. */
-    def &&!(optPlugin: Option[AutoPlugin]): Plugins = optPlugin match {
-      case None => plugins
-      case Some(plugin) => this &&! plugin
-    }
-  }
-  
   object autoImport {
     val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
@@ -98,7 +87,7 @@ object PlayBuildBase extends AutoPlugin {
     /**
      * Plugins configuration for a Play project that doesn't get published.
      */
-    def PlayNoPublish: Plugins = PlayNoPublishBase &&! Sonatype
+    def PlayNoPublish: Plugins = PlayNoPublishBase && PluginsAccessor.exclude(Sonatype)
 
     /**
      * Convenience function to get the Play version. Allows the version to be overridden by a system property, which is
