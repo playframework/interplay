@@ -8,26 +8,17 @@ import sbt.ScriptedPlugin.autoImport._
 /**
  * Base Plugin for Play sbt plugins.
  *
- * - Publishes the plugin to bintray, or sonatype snapshots if it's a snapshot build.
+ * - Publishes the plugin to sonatype
  * - Adds scripted configuration.
  */
 object PlaySbtPluginBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBintrayBase && PlayBuildBase && PlaySbtBuildBase && SbtPlugin
-
-  import PlayBuildBase.autoImport._
+  override def requires = PlaySonatypeBase && PlayBuildBase && PlaySbtBuildBase && SbtPlugin
 
   override def projectSettings = Seq(
     scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
-    publishTo := {
-      val currentValue = publishTo.value
-      if (isSnapshot.value) {
-        Some(Opts.resolver.sonatypeSnapshots)
-      } else currentValue
-    },
-
-    publishMavenStyle := isSnapshot.value,
-    playBuildPromoteBintray in ThisBuild := true
+    // Both snapshots and releases are published to Sonatype which requires Maven style.
+    publishMavenStyle := true,
   )
 }

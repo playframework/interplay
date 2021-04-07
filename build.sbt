@@ -29,7 +29,9 @@ lazy val interplay = (project in file("."))
           releaseStepCommandAndRemaining("+test"),
           releaseStepTask(playBuildExtraTests in thisProjectRef.value),
           releaseStepCommandAndRemaining("+publishSigned"),
-          releaseStepTask(bintrayRelease in thisProjectRef.value),
+          // Using `playBuildPromoteSonatype` is obsolete now.
+          // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
+          releaseStepCommand("sonatypeBundleRelease"),
           pushChanges
         )
       }
@@ -40,7 +42,6 @@ description := "Base build plugin for all Play modules"
 
 addSbtPlugin("com.github.sbt" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % sbtPgpVersion)
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % sbtBintrayVersion)
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 

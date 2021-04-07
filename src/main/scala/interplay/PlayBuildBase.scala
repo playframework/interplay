@@ -5,7 +5,6 @@ import sbt.Keys._
 import sbt.plugins.JvmPlugin
 import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype
-import bintray.BintrayPlugin
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.PgpKeys
 
@@ -16,22 +15,9 @@ object PlayBuildBase extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = SbtPgp && JvmPlugin
 
-  /** Helper for operations on plugins. */
-  private implicit class EnhancedPlugins(val plugins: Plugins) extends AnyVal {
-    /** Disable the given plugin. */
-    def &&!(plugin: AutoPlugin): Plugins = plugins && PluginsAccessor.exclude(plugin)
-    /** Disable the given plugin, if it's defined. */
-    def &&!(optPlugin: Option[AutoPlugin]): Plugins = optPlugin match {
-      case None => plugins
-      case Some(plugin) => this &&! plugin
-    }
-  }
-  
   object autoImport {
     val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
-    val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
-    val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
     val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
 
@@ -45,22 +31,19 @@ object PlayBuildBase extends AutoPlugin {
     val playCurrentBranch = settingKey[String]("The current branch for the project")
 
     /**
-     * Plugins configuration for a Play sbt plugin. Use this in preference to PlaySbtPluginBase, because this will
-     * also disable the Sonatype plugin.
+     * Plugins configuration for a Play sbt plugin.
      */
-    def PlaySbtPlugin: Plugins = PlaySbtPluginBase &&! Sonatype
+    def PlaySbtPlugin: Plugins = PlaySbtPluginBase
 
     /**
-     * Plugins configuration for a Play sbt library. Use this in preference to PlaySbtLibraryBase, because this will
-     * also disable the Bintray plugin.
+     * Plugins configuration for a Play sbt library.
      */
-    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase &&! BintrayPlugin
+    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase
 
     /**
-     * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
-     * also disable the Bintray plugin.
+     * Plugins configuration for a Play library.
      */
-    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin
+    def PlayLibrary: Plugins = PlayLibraryBase
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.
@@ -70,7 +53,7 @@ object PlayBuildBase extends AutoPlugin {
     /**
      * Plugins configuration for a Play project that doesn't get published.
      */
-    def PlayNoPublish: Plugins = PlayNoPublishBase &&! BintrayPlugin &&! Sonatype
+    def PlayNoPublish: Plugins = PlayNoPublishBase && PluginsAccessor.exclude(Sonatype)
 
     /**
      * Convenience function to get the Play version. Allows the version to be overridden by a system property, which is

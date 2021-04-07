@@ -1,8 +1,7 @@
 package interplay
 
-import sbt.{AutoPlugin, SettingKey, State, Project, ThisBuild}
+import sbt.{AutoPlugin, ThisBuild}
 import sbt.Keys.{version, thisProjectRef}
-import bintray.BintrayPlugin.autoImport.bintrayRelease
 import sbtrelease.ReleasePlugin
 import sbtrelease.ReleasePlugin.autoImport._
 import com.jsuereth.sbtpgp.PgpKeys
@@ -28,13 +27,6 @@ object PlayReleaseBase extends AutoPlugin {
     releaseProcess := {
       import ReleaseTransformations._
 
-      def ifDefinedAndTrue(key: SettingKey[Boolean], step: State => State): State => State = { state =>
-        Project.extract(state).getOpt(key in ThisBuild) match {
-          case Some(true) => step(state)
-          case _ => state
-        }
-      }
-
       Seq[ReleaseStep](
         checkSnapshotDependencies,
         inquireVersions,
@@ -49,8 +41,9 @@ object PlayReleaseBase extends AutoPlugin {
         releaseStepCommandAndRemaining("+publishSigned"),
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
-        ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
+        // Using `playBuildPromoteSonatype` is obsolete now.
+        // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
+        releaseStepCommand("sonatypeBundleRelease"),
         setNextVersion,
         commitNextVersion,
         pushChanges

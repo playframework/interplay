@@ -6,7 +6,7 @@ import xerial.sbt.Sonatype
 import xerial.sbt.Sonatype.autoImport.{ sonatypePublishToBundle, sonatypeProfileName }
 
 /**
- * Base plugin for all projects that publish to sonatype
+ * Base plugin for all projects that publish to sonatype (which is all of them!)
  */
 object PlaySonatypeBase extends AutoPlugin {
   override def trigger = noTrigger

@@ -3,8 +3,6 @@ lazy val common: Seq[Setting[_]] = Seq(
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
   },
   publish := { throw sys.error("Publish should not have been invoked") },
-  bintrayRelease := IO.write(target.value / "bintray-release-version", version.value),
-  bintrayCredentialsFile := (baseDirectory in ThisBuild).value / "bintray.credentials",
   credentials := Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", "sbt", "notcorrectpassword"))
 )
 

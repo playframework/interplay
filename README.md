@@ -2,7 +2,7 @@
 
 Interplay is a set of sbt plugins for Play builds, sharing common configuration between Play builds so that they can be configured in one place.
 
-[![Build Status](https://travis-ci.org/playframework/interplay.svg?branch=master)](https://travis-ci.org/playframework/interplay) [![Download](https://api.bintray.com/packages/playframework/sbt-plugin-releases/interplay/images/download.svg)](https://bintray.com/playframework/sbt-plugin-releases/interplay/_latestVersion)
+[![Build Status](https://travis-ci.org/playframework/interplay.svg?branch=master)](https://travis-ci.org/playframework/interplay)
 
 ## Usage
 
