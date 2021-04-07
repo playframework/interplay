@@ -1,10 +1,9 @@
 package interplay
 
-import bintray.BintrayPlugin
-import bintray.BintrayPlugin.autoImport._
 import com.jsuereth.sbtpgp.SbtPgp
 import com.jsuereth.sbtpgp.PgpKeys
 import interplay.Omnidoc.autoImport._
+import sbt.plugins.SbtPlugin
 import sbt.Keys._
 import sbt._
 import sbt.plugins.JvmPlugin
@@ -47,8 +46,6 @@ object PlayBuildBase extends AutoPlugin {
   object autoImport {
     val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
     val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
-    val playBuildPromoteBintray = settingKey[Boolean]("Whether a Bintray promotion should be done on release")
-    val playBuildPromoteSonatype = settingKey[Boolean]("Whether a Sonatype promotion should be done on release")
     val playCrossBuildRootProject = settingKey[Boolean]("Whether the root project should be cross built or not")
     val playCrossReleasePlugins = settingKey[Boolean]("Whether the sbt plugins should be cross released or not")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
@@ -66,19 +63,17 @@ object PlayBuildBase extends AutoPlugin {
      * Plugins configuration for a Play sbt plugin. Use this in preference to PlaySbtPluginBase, because this will
      * also disable the Sonatype plugin.
      */
-    def PlaySbtPlugin: Plugins = PlaySbtPluginBase &&! Sonatype
+    def PlaySbtPlugin: Plugins = PlaySbtPluginBase
 
     /**
-     * Plugins configuration for a Play sbt library. Use this in preference to PlaySbtLibraryBase, because this will
-     * also disable the Bintray plugin.
+     * Plugins configuration for a Play sbt library. Use this in preference to PlaySbtLibraryBase.
      */
-    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase &&! BintrayPlugin
+    def PlaySbtLibrary: Plugins = PlaySbtLibraryBase
 
     /**
-     * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase, because this will
-     * also disable the Bintray plugin.
+     * Plugins configuration for a Play library. Use this in preference to PlayLibraryBase
      */
-    def PlayLibrary: Plugins = PlayLibraryBase &&! BintrayPlugin &&! PlaySbtCompat.optScriptedAutoPlugin
+    def PlayLibrary: Plugins = PlayLibraryBase &&! PlaySbtCompat.optScriptedAutoPlugin
 
     /**
      * Plugins configuration for a Play Root Project that doesn't get published.
@@ -88,7 +83,7 @@ object PlayBuildBase extends AutoPlugin {
     /**
      * Plugins configuration for a Play project that doesn't get published.
      */
-    def PlayNoPublish: Plugins = PlayNoPublishBase &&! BintrayPlugin &&! Sonatype
+    def PlayNoPublish: Plugins = PlayNoPublishBase &&! Sonatype
 
     /**
      * Convenience function to get the Play version. Allows the version to be overridden by a system property, which is
@@ -180,28 +175,18 @@ private object PlaySbtBuildBase extends AutoPlugin {
 /**
  * Base Plugin for Play sbt plugins.
  *
- * - Publishes the plugin to bintray, or sonatype snapshots if it's a snapshot build.
+ * - Publishes the plugin to sonatype.
  * - Adds scripted configuration.
  */
 object PlaySbtPluginBase extends AutoPlugin {
 
   override def trigger = noTrigger
-  override def requires = PlayBintrayBase && PlayBuildBase && PlaySbtBuildBase
-
-  import PlayBuildBase.autoImport._
+  override def requires = PlaySonatypeBase && PlayBuildBase && PlaySbtBuildBase
 
   override def projectSettings = PlaySbtCompat.scriptedSettings /* FIXME: Not needed in sbt 1 */ ++ Seq(
     PlaySbtCompat.scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
+    publishMavenStyle := true,
     sbtPlugin := true,
-    publishTo := {
-      val currentValue = publishTo.value
-      if (isSnapshot.value) {
-        Some(Opts.resolver.sonatypeSnapshots)
-      } else currentValue
-    },
-
-    publishMavenStyle := isSnapshot.value,
-    playBuildPromoteBintray in ThisBuild := true
   )
 }
 
@@ -212,7 +197,7 @@ object PlaySbtPluginBase extends AutoPlugin {
  * - Includes omnidoc configuration
  * - Cross builds the project
  */
-  object PlayLibraryBase extends AutoPlugin {
+object PlayLibraryBase extends AutoPlugin {
 
   override def trigger = noTrigger
   override def requires = PlayBuildBase && PlaySonatypeBase && Omnidoc
@@ -220,7 +205,6 @@ object PlaySbtPluginBase extends AutoPlugin {
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true,
     omnidocGithubRepo := s"playframework/${(playBuildRepoName in ThisBuild).value}",
     omnidocTagPrefix := "",
     javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
@@ -240,12 +224,6 @@ object PlaySbtLibraryBase extends AutoPlugin {
 
   override def trigger = noTrigger
   override def requires = PlayBuildBase && PlaySbtBuildBase && PlaySonatypeBase
-
-  import PlayBuildBase.autoImport._
-
-  override def projectSettings = Seq(
-    playBuildPromoteSonatype in ThisBuild := true
-  )
 }
 
 /**
@@ -295,8 +273,7 @@ object PlayReleaseBase extends AutoPlugin {
         else publishArtifacts,
 
         releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
-        ifDefinedAndTrue(playBuildPromoteBintray, releaseStepTask(bintrayRelease in thisProjectRef.value)),
-        ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
+        releaseStepCommand("sonatypeBundleRelease"),
         setNextVersion,
         commitNextVersion,
         pushChanges
@@ -348,7 +325,7 @@ object PlayWhitesourcePlugin extends AutoPlugin {
  */
 object PlayRootProjectBase extends AutoPlugin {
   override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlayBintrayBase && PlaySonatypeBase && PlayReleaseBase
+  override def requires = PlayBuildBase && PlaySonatypeBase && PlayReleaseBase
 
   import PlayBuildBase.autoImport._
 
@@ -372,23 +349,6 @@ object PlayNoPublishBase extends AutoPlugin {
     publish := {},
     publishLocal := {},
     publishTo := Some(Resolver.file("no-publish", crossTarget.value / "no-publish"))
-  )
-}
-
-/**
- * Base plugin for all projects that publish to bintray
- */
-object PlayBintrayBase extends AutoPlugin {
-  override def trigger = noTrigger
-  override def requires = BintrayPlugin
-
-  import PlayBuildBase.autoImport._
-
-  override def projectSettings = Seq(
-    bintrayOrganization := Some("playframework"),
-    bintrayRepository := "sbt-plugin-releases",
-    bintrayPackage := (playBuildRepoName in ThisBuild).value,
-    bintrayReleaseOnPublish := false
   )
 }
 
