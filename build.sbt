@@ -2,6 +2,7 @@ import _root_.interplay.ScalaVersions._
 import buildinfo.BuildInfo._
 
 lazy val interplay = (project in file("."))
+<<<<<<< HEAD
   .enablePlugins(PlaySbtPlugin && PlayReleaseBase, SbtPlugin)
 
 description := "Base build plugin for all Play modules"
@@ -11,6 +12,33 @@ crossScalaVersions -= scala210 // drop cross-build to sbt 0.13 (which uses Scala
 addSbtPlugin("com.github.gseitz" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % sbtPgpVersion)
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % sbtBintrayVersion)
+=======
+  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
+  .settings(
+    Seq(
+      // Release settings
+      releaseProcess := {
+        import ReleaseTransformations._
+        Seq[ReleaseStep](
+          checkSnapshotDependencies,
+          runClean,
+          releaseStepCommandAndRemaining("+test"),
+          releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+          releaseStepCommandAndRemaining("+publishSigned"),
+          // Using `playBuildPromoteSonatype` is obsolete now.
+          // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
+          releaseStepCommand("sonatypeBundleRelease"),
+          pushChanges
+        )
+      }
+    )
+  )
+
+description := "Base build plugin for all Play modules"
+
+addSbtPlugin("com.github.sbt" % "sbt-release" % sbtReleaseVersion)
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % sbtPgpVersion)
+>>>>>>> d10f72b... Sunset Bintray
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 

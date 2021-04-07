@@ -1,11 +1,33 @@
 language: scala
 
+<<<<<<< HEAD
 env:
   - TRAVIS_JDK=8
   - TRAVIS_JDK=11
 
 before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
 install: jabba install "adopt@~1.$TRAVIS_JDK.0-0" && jabba use "$_" && java -Xmx32m -version
+=======
+before_install: curl -Ls https://git.io/jabba | bash && . ~/.jabba/jabba.sh
+install: jabba install "adopt@~1.11.0-0" && jabba use "$_" && java -Xmx32m -version
+
+git:
+  depth: false # Avoid sbt-dynver not seeing the tag
+
+script: java -version
+
+jobs:
+  include:
+    - stage: check
+      script: sbt validate
+
+    - stage: publish
+      name: "Publish artifacts to Sonatype"
+      script: sbt publish
+
+stages:
+  - name: check
+>>>>>>> d10f72b... Sunset Bintray
 
 script: sbt validate
 

@@ -5,10 +5,16 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.0"
 )
 
+<<<<<<< HEAD
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.12")
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8.1")
+=======
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.0.15")
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.1.2")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.5")
+>>>>>>> d10f72b... Sunset Bintray
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.18")
 
 lazy val build = (project in file(".")).
