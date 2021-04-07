@@ -33,7 +33,14 @@ def common: Seq[Setting[_]] = Seq(
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
   },
   publish := { throw sys.error("Publish should not have been invoked") },
-  bintrayRelease := IO.write(target.value / "bintray-release-version", version.value),
-  bintrayCredentialsFile := (baseDirectory in ThisBuild).value / "bintray.credentials"
 )
 
+commands in ThisBuild := {
+  Seq("sonatypeBundleRelease").map { name =>
+    Command.command(name) { state =>
+      val extracted = Project.extract(state)
+      IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
+      state
+    }
+  } ++ (commands in ThisBuild).value
+}

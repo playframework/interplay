@@ -1,5 +1,6 @@
 # Setup local git repo
 $ exec git init
+$ exec git checkout -b main
 # Need to configure name/email since on build server it's not set
 $ exec git config user.email sbt@example.com
 $ exec git config user.name sbt
@@ -9,8 +10,8 @@ $ exec git commit -m commit
 # Setup remote git repo in target directory
 $ exec git init --bare $PWD/target/remote
 $ exec git remote add origin $PWD/target/remote
-$ exec git push origin master
-$ exec git branch -u origin/master
+$ exec git push origin main
+$ exec git branch -u origin/main
 
 $ exec git status
 $ exec git diff
