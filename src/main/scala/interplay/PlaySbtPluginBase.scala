@@ -18,6 +18,7 @@ object PlaySbtPluginBase extends AutoPlugin {
 
   override def projectSettings = Seq(
     scriptedLaunchOpts += (version apply { v => s"-Dproject.version=$v" }).value,
-    publishMavenStyle := isSnapshot.value,
+    // Both snapshots and releases are published to Sonatype which requires Maven style.
+    publishMavenStyle := true,
   )
 }
