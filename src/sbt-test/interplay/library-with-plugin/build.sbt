@@ -59,7 +59,7 @@ InputKey[Unit]("contains") := {
 }
 
 commands in ThisBuild := {
-  Seq("sonatypeBundleRelease").map { name =>
+  Seq("sonatypeRelease", "sonatypeBundleRelease").map { name =>
     Command.command(name) { state =>
       val extracted = Project.extract(state)
       IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
