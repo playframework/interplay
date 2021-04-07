@@ -12,7 +12,7 @@ import interplay.PlayBuildBase.autoImport._
  */
 object PlayRootProjectBase extends AutoPlugin {
   override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlayBintrayBase && PlaySonatypeBase && PlayReleaseBase
+  override def requires = PlayBuildBase && PlaySonatypeBase && PlayReleaseBase
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((playCrossBuildRootProject in ThisBuild).?.value.exists(identity)) {
