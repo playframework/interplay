@@ -23,7 +23,7 @@ object PlayReleaseBase extends AutoPlugin {
 
     // Release settings
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-    releaseTagName := (version in ThisBuild).value,
+    releaseTagName := (ThisBuild / version).value,
     releaseProcess := {
       import ReleaseTransformations._
 
@@ -33,14 +33,14 @@ object PlayReleaseBase extends AutoPlugin {
         runClean,
         releaseStepCommandAndRemaining("+test"),
 
-        releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+        releaseStepTask(thisProjectRef.value / playBuildExtraTests),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
 
         releaseStepCommandAndRemaining("+publishSigned"),
 
-        releaseStepTask(playBuildExtraPublish in thisProjectRef.value),
+        releaseStepTask(thisProjectRef.value / playBuildExtraPublish),
         // Using `playBuildPromoteSonatype` is obsolete now.
         // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
         releaseStepCommand("sonatypeBundleRelease"),

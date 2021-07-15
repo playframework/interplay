@@ -20,12 +20,12 @@ import interplay.Omnidoc.autoImport.omnidocTagPrefix
   import PlayBuildBase.autoImport._
 
   override def projectSettings = Seq(
-    omnidocGithubRepo := s"playframework/${(playBuildRepoName in ThisBuild).value}",
+    omnidocGithubRepo := s"playframework/${(ThisBuild / playBuildRepoName).value}",
     omnidocTagPrefix := "",
-    javacOptions in compile ++= Seq("-source", "1.8", "-target", "1.8"),
-    javacOptions in doc := Seq("-source", "1.8"),
+    compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
+    doc / javacOptions := Seq("-source", "1.8"),
     crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala212),
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala213),
-    playCrossBuildRootProject in ThisBuild := true
+    ThisBuild / playCrossBuildRootProject := true
   )
 }

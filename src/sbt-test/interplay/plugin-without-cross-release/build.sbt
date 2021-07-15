@@ -9,10 +9,10 @@ lazy val `mock-sbt-plugin` = (project in file("."))
   )
 
 playBuildExtraTests := {
-  (scripted in `mock-sbt-plugin`).toTask("").value
+  (`mock-sbt-plugin` / scripted).toTask("").value
 }
 
-playBuildRepoName in ThisBuild := "mock-without-cross-release"
+ThisBuild / playBuildRepoName := "mock-without-cross-release"
 
 // Below this line is for facilitating tests
 
@@ -35,12 +35,12 @@ def common: Seq[Setting[_]] = Seq(
   publish := { throw sys.error("Publish should not have been invoked") },
 )
 
-commands in ThisBuild := {
+ThisBuild / commands := {
   Seq("sonatypeRelease", "sonatypeBundleRelease").map { name =>
     Command.command(name) { state =>
       val extracted = Project.extract(state)
       IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
       state
     }
-  } ++ (commands in ThisBuild).value
+  } ++ (ThisBuild / commands).value
 }

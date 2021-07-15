@@ -2,7 +2,7 @@ lazy val `mock-library` = (project in file("."))
   .enablePlugins(PlayLibrary && PlayReleaseBase)
   .settings(common: _*)
 
-playBuildRepoName in ThisBuild := "mock"
+ThisBuild / playBuildRepoName := "mock"
 
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
@@ -25,7 +25,7 @@ TaskKey[Unit]("verifyOmnidocSourceUrl") := {
     case other => throw sys.error(s"Expected $expected source url, got $other")
   }
 
-  val srcZip = (packageSrc in Compile).value
+  val srcZip = (Compile / packageSrc).value
   val jarFile = new JarFile(srcZip)
   val manifest = jarFile.getManifest.getMainAttributes
 
@@ -44,12 +44,12 @@ def common: Seq[Setting[_]] = Seq(
   credentials := Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", "sbt", "notcorrectpassword"))
 )
 
-commands in ThisBuild := {
+ThisBuild / commands := {
   Seq("sonatypeRelease", "sonatypeBundleRelease").map { name =>
     Command.command(name) { state =>
       val extracted = Project.extract(state)
       IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
       state
     }
-  } ++ (commands in ThisBuild).value
+  } ++ (ThisBuild / commands).value
 }

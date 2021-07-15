@@ -8,7 +8,7 @@ lazy val `mock-library` = (project in file("mock-library"))
   .enablePlugins(PlayLibrary)
   .settings(common)
 
-playBuildRepoName in ThisBuild := "mock"
+ThisBuild / playBuildRepoName := "mock"
 
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
@@ -28,12 +28,12 @@ def common: Seq[Setting[_]] = Seq(
   credentials := Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", "sbt", "notcorrectpassword"))
 )
 
-commands in ThisBuild := {
+ThisBuild / commands := {
   Seq("sonatypeRelease", "sonatypeBundleRelease").map { name =>
     Command.command(name) { state =>
       val extracted = Project.extract(state)
       IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
       state
     }
-  } ++ (commands in ThisBuild).value
+  } ++ (ThisBuild / commands).value
 }

@@ -18,7 +18,7 @@ object PlayWhitesourcePlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     whitesourceProduct := "Lightbend Reactive Platform",
-    whitesourceAggregateProjectName := (moduleName in LocalRootProject).value + "-" + {
+    whitesourceAggregateProjectName := (LocalRootProject / moduleName).value + "-" + {
       if (isSnapshot.value) {
         // There are two scenarios then:
         // 1. It is the master branch
@@ -28,14 +28,14 @@ object PlayWhitesourcePlugin extends AutoPlugin {
         } else {
           // If it is not "master", then it is a release branch
           // that should also be handled as an snapshot report.
-          CrossVersion.partialVersion((version in LocalRootProject).value) match {
+          CrossVersion.partialVersion((LocalRootProject / version).value) match {
             case Some((major, minor)) => s"$major.$minor-snapshot"
             case None => "snapshot"
           }
         }
       } else {
         // Here we have only the case where we are releasing a version.
-        CrossVersion.partialVersion((version in LocalRootProject).value) match {
+        CrossVersion.partialVersion((LocalRootProject / version).value) match {
           case Some((major, minor)) => s"$major.$minor-stable"
           case None => "snapshot"
         }
