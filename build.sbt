@@ -2,7 +2,7 @@ import _root_.interplay.ScalaVersions._
 import buildinfo.BuildInfo._
 
 // Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
-dynverVTagPrefix in ThisBuild := false
+ThisBuild / dynverVTagPrefix := false
 
 // Sanity-check: assert that version comes from a tag (e.g. not a too-shallow clone)
 // https://github.com/dwijnand/sbt-dynver/#sanity-checking-the-version
@@ -27,7 +27,7 @@ lazy val interplay = (project in file("."))
           checkSnapshotDependencies,
           runClean,
           releaseStepCommandAndRemaining("+test"),
-          releaseStepTask(playBuildExtraTests in thisProjectRef.value),
+          releaseStepTask(thisProjectRef.value / playBuildExtraTests),
           releaseStepCommandAndRemaining("+publishSigned"),
           // Using `playBuildPromoteSonatype` is obsolete now.
           // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
@@ -70,11 +70,11 @@ playBuildExtraTests := {
 // that they can be run with either sbt 0.13 or
 // sbt 1.
 scriptedLaunchOpts += {
-  val sbtV = (sbtVersion in pluginCrossBuild).value
+  val sbtV = (pluginCrossBuild / sbtVersion).value
   s"-Dsbt.version=$sbtV"
 }
 
-playBuildRepoName in ThisBuild := "interplay"
+ThisBuild / playBuildRepoName := "interplay"
 
 enablePlugins(SbtPlugin)
 

@@ -67,7 +67,7 @@ object PlayBuildBase extends AutoPlugin {
   override def projectSettings = Seq(
     // General settings
     organization := "com.typesafe.play",
-    homepage := Some(url(s"https://github.com/playframework/${(playBuildRepoName in ThisBuild).value}")),
+    homepage := Some(url(s"https://github.com/playframework/${(ThisBuild / playBuildRepoName).value}")),
     licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
 
     scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
@@ -98,7 +98,7 @@ object PlayBuildBase extends AutoPlugin {
     },
 
     pomExtra := {
-      val repoName = (playBuildRepoName in ThisBuild).value
+      val repoName = (ThisBuild / playBuildRepoName).value
       <scm>
         <url>https://github.com/playframework/{repoName}</url>
         <connection>scm:git:git@github.com:playframework/{repoName}.git</connection>

@@ -10,7 +10,7 @@ lazy val common: Seq[Setting[_]] = Seq(
 lazy val `mock-root` = (project in file("."))
   .settings(
     common,
-    playCrossBuildRootProject in ThisBuild := true // activates cross build for Scala 2.12 and 2.13
+    ThisBuild / playCrossBuildRootProject := true // activates cross build for Scala 2.12 and 2.13
   )
   .enablePlugins(PlayRootProject)
   .aggregate(`mock-library`, `mock-sbt-plugin`) // has a sbt plugin that will be built together with root project
@@ -33,16 +33,16 @@ lazy val `mock-library` = (project in file("mock-library"))
   .settings(common)
 
 playBuildExtraTests := {
-  (scripted in `mock-sbt-plugin`).toTask("").value
-  val _ = (test in (`mock-sbt-library`, Test)).value
+  (`mock-sbt-plugin` / scripted).toTask("").value
+  val _ = (`mock-sbt-library` / Test / test).value
 }
 
 playBuildExtraPublish := {
-  val p = (PgpKeys.publishSigned in `mock-sbt-plugin`).value
-  val l = (PgpKeys.publishSigned in `mock-sbt-library`).value
+  val p = (`mock-sbt-plugin` / PgpKeys.publishSigned).value
+  val l = (`mock-sbt-library` / PgpKeys.publishSigned).value
 }
 
-playBuildRepoName in ThisBuild := "mock"
+ThisBuild / playBuildRepoName := "mock"
 
 // Below this line is for facilitating tests
 
@@ -58,12 +58,12 @@ InputKey[Unit]("contains") := {
   }
 }
 
-commands in ThisBuild := {
+ThisBuild / commands := {
   Seq("sonatypeRelease", "sonatypeBundleRelease").map { name =>
     Command.command(name) { state =>
       val extracted = Project.extract(state)
       IO.write(extracted.get(target) / "sonatype-release-version", extracted.get(version))
       state
     }
-  } ++ (commands in ThisBuild).value
+  } ++ (ThisBuild / commands).value
 }
