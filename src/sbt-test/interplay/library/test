@@ -16,6 +16,7 @@ $ exec git branch -u origin/main
 $ exec git status
 $ exec git diff
 
+> reload
 > release with-defaults
 
 # Make sure publishSigned ran

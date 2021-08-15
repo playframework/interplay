@@ -13,6 +13,7 @@ $ exec git remote add origin $PWD/target/remote
 $ exec git push origin main
 $ exec git branch -u origin/main
 
+> reload
 > release with-defaults
 
 # Make sure publishSigned ran on every project with the right publish settings
