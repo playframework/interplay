@@ -23,8 +23,8 @@ $ exec git branch -u origin/main
 $ exists mock-sbt-plugin/target/scripted-ran
 
 # Make sure publishSigned ran on every project with the right publish settings
-$ exists target/scala-2.12/publish-version
-> contains target/scala-2.12/publish-version no-publish:1.2.3
+$ exists target/scala-2.13/publish-version
+> contains target/scala-2.13/publish-version no-publish:1.2.3
 > contains mock-sbt-plugin/target/scala-2.12/sbt-1.0/publish-version sonatype-local-bundle:1.2.3
 
 # Make sure bintrayRelease ran only in the root project
