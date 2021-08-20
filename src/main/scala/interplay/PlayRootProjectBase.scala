@@ -16,9 +16,9 @@ object PlayRootProjectBase extends AutoPlugin {
   override def projectSettings = PlayNoPublishBase.projectSettings ++ Seq(
     crossScalaVersions := {
       if ((ThisBuild / playCrossBuildRootProject).?.value.exists(identity)) {
-        Seq(ScalaVersions.scala212, ScalaVersions.scala213)
+        Seq(ScalaVersions.scala213) // TODO: Add ScalaVersions.scala3
       } else {
-        Seq(ScalaVersions.scala212)
+        Seq(ScalaVersions.scala213)
       }
     }
   )
