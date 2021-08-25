@@ -1,3 +1,5 @@
+import interplay.ScalaVersions._
+
 lazy val common: Seq[Setting[_]] = Seq(
   PgpKeys.publishSigned := {
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
@@ -10,7 +12,7 @@ lazy val common: Seq[Setting[_]] = Seq(
 lazy val `mock-root` = (project in file("."))
   .settings(
     common,
-    ThisBuild / playCrossBuildRootProject := true // activates cross build for Scala 2.12 and 2.13
+    crossScalaVersions := Seq(scala212, scala213)
   )
   .enablePlugins(PlayRootProject)
   .aggregate(`mock-library`, `mock-sbt-plugin`) // has a sbt plugin that will be built together with root project

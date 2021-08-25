@@ -1,8 +1,13 @@
+import interplay.ScalaVersions._
+
 // What an actual project would look like
 lazy val `mock-root` = (project in file("."))
   .enablePlugins(PlayRootProject)
   .aggregate(`mock-sbt-plugin`)
-  .settings(common)
+  .settings(
+    common,
+    crossScalaVersions := Seq(scala212, scala213)
+  )
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
   .enablePlugins(PlaySbtPlugin)

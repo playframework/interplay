@@ -23,7 +23,8 @@ $ exec git diff
 > release with-defaults
 
 # Make sure publishSigned ran
-> contains target/scala-2.12/publish-version sonatype-local-bundle:1.2.3
+#TODO:
+#> contains target/scala-3/publish-version sonatype-local-bundle:1.2.3
 > contains target/scala-2.13/publish-version sonatype-local-bundle:1.2.3
 
 # Make sure sonatypeRelease ran
