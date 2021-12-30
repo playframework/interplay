@@ -43,7 +43,6 @@ description := "Base build plugin for all Play modules"
 addSbtPlugin("com.github.sbt" % "sbt-release" % sbtReleaseVersion)
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % sbtPgpVersion)
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
-addSbtPlugin("com.lightbend" % "sbt-whitesource" % sbtWhitesourceVersion)
 
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
