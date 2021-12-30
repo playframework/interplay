@@ -59,24 +59,3 @@ playBuildExtraPublish := {
 ### Play docs
 
 If your project includes documentation that you want included in the main Play documentation, you can allow this by adding the `Playdoc` plugin to it.  In that case you also will need to configure the `playdocDirectory` to point to the documentation directory.
-
-## Whitesource integration
-
-Interplay has a `PlayWhitesourcePlugin` which can be used to help the integration with [sbt-whitesource](https://github.com/typesafehub/sbt-whitesource). To use it, add the following to your root project:
-
-```scala
-lazy val PlayFramework = Project("Play-Framework", file("."))
-    .enablePlugins(PlayRootProject)
-    .enablePlugins(PlayWhitesourcePlugin)
-    .settings(
-      whitesourceAggregateProjectName := "name-of-the-project", // project name on Whitesource
-      whitesourceAggregateProjectToken := "389ebacb-..." // project token on Whitesource
-    )
-```
-
-After that, you can run sbt [sbt-whitesource](https://github.com/typesafehub/sbt-whitesource) tasks:
-
-```bash
-sbt whitesourceCheckPolicies
-sbt whitesourceUpdate
-```
