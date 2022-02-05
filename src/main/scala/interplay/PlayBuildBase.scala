@@ -22,7 +22,7 @@ object PlayBuildBase extends AutoPlugin {
 
     // This is not using sbt-git because we need a more stable way to set
     // the current branch in a more stable way, for example, we may want to
-    // get the current branch as "master" even if we are at a detached commit.
+    // get the current branch as "main" even if we are at a detached commit.
     //
     // This is useful when running tasks on Travis, where the builds runs in
     // a detached commit. See the discussion here:
@@ -93,7 +93,7 @@ object PlayBuildBase extends AutoPlugin {
     } orElse {
       sys.props.get("currentBranch")
     } getOrElse {
-      "master"
+      "main"
     },
 
     pomExtra := {
