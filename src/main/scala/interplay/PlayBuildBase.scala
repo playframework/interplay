@@ -52,7 +52,7 @@ object PlayBuildBase extends AutoPlugin {
 
     // This is not using sbt-git because we need a more stable way to set
     // the current branch in a more stable way, for example, we may want to
-    // get the current branch as "master" even if we are at a detached commit.
+    // get the current branch as "main" even if we are at a detached commit.
     //
     // This is useful when running tasks on Travis, where the builds runs in
     // a detached commit. See the discussion here:
@@ -124,7 +124,7 @@ object PlayBuildBase extends AutoPlugin {
     } orElse {
       sys.props.get("currentBranch")
     } getOrElse {
-      "master"
+      "main"
     },
 
     pomExtra := {
@@ -295,12 +295,12 @@ object PlayWhitesourcePlugin extends AutoPlugin {
     whitesourceAggregateProjectName := (moduleName in LocalRootProject).value + "-" + {
       if (isSnapshot.value) {
         // There are two scenarios then:
-        // 1. It is the master branch
+        // 1. It is the main branch
         // 2. It is a release branch (2.6.x, 2.5.x, etc)
-        if (playCurrentBranch.value == "master") {
-          "master"
+        if (playCurrentBranch.value == "main") {
+          "main"
         } else {
-          // If it is not "master", then it is a release branch
+          // If it is not "main", then it is a release branch
           // that should also be handled as an snapshot report.
           CrossVersion.partialVersion((version in LocalRootProject).value) match {
             case Some((major, minor)) => s"$major.$minor-snapshot"
