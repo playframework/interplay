@@ -24,7 +24,7 @@ object Omnidoc extends AutoPlugin {
 
   override def projectSettings = Seq(
     omnidocSourceUrl := omnidocGithubRepo.?.value map { repo =>
-      val development: String = (omnidocSnapshotBranch ?? "master").value
+      val development: String = (omnidocSnapshotBranch ?? "main").value
       val tagged: String = (omnidocTagPrefix ?? "v").value + version.value
       val tree: String = if (isSnapshot.value) development else tagged
       val prefix: String = "/" + (omnidocPathPrefix ?? "").value
