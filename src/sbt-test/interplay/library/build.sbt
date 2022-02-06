@@ -17,7 +17,7 @@ InputKey[Unit]("contains") := {
 TaskKey[Unit]("verifyOmnidocSourceUrl") := {
   import java.util.jar.JarFile
 
-  val expected = "https://github.com/playframework/mock/tree/master"
+  val expected = "https://github.com/playframework/mock/tree/main"
 
   val sourceUrl = omnidocSourceUrl.value
   sourceUrl match {
