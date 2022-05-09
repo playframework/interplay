@@ -27,6 +27,6 @@ lazy val build = (project in file(".")).
 // part of the meta-build (but not published) and then *again* as part
 // of the proper build (where it is properly cross-compiled and
 // published).
-unmanagedSourceDirectories in Compile ++= Seq(
+Compile / unmanagedSourceDirectories ++= Seq(
   baseDirectory.value.getParentFile / "src" / "main" / "scala"
 )

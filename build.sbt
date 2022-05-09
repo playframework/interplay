@@ -11,7 +11,6 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
-
 lazy val interplay = (project in file("."))
   .enablePlugins(PlaySbtPlugin)
 
