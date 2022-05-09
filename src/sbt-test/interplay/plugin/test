@@ -17,7 +17,7 @@ $ exec git branch -u origin/main
 # However, that initial state does not contain the above created .git folder (created via git init) yet.
 > reload
 
-> release cross with-defaults
+> ci-release
 
 # Make sure scripted tests ran
 $ exists target/scripted-ran

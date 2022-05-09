@@ -20,7 +20,7 @@ $ exec git diff
 # However, that initial state does not contain the above created .git folder (created via git init) yet.
 > reload
 
-> release with-defaults
+> ci-release
 
 # Make sure publishSigned ran
 #TODO:
