@@ -40,8 +40,6 @@ If your project is not an sbt plugin, but does get used by sbt, then enable the 
 
 ### The root project
 
-If your root project is also a Play library or SBT Plugin, then you should enable the `PlayReleaseBase` plugin in addition to the other plugin.
-
 If you have a root project that is just a meta project that aggregates all your projects together, but itself shouldn't be published, then enable the `PlayRootProject` plugin on it.
 
 ### Aggregating projects

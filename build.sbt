@@ -16,26 +16,7 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
 
 
 lazy val interplay = (project in file("."))
-  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
-  .settings(
-    Seq(
-      // Release settings
-      releaseProcess := {
-        import ReleaseTransformations._
-        Seq[ReleaseStep](
-          checkSnapshotDependencies,
-          runClean,
-          releaseStepCommandAndRemaining("+test"),
-          releaseStepTask(thisProjectRef.value / playBuildExtraTests),
-          releaseStepCommandAndRemaining("+publishSigned"),
-          // Using `playBuildPromoteSonatype` is obsolete now.
-          // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
-          releaseStepCommand("sonatypeBundleRelease"),
-          pushChanges
-        )
-      }
-    )
-  )
+  .enablePlugins(PlaySbtPlugin)
 
 description := "Base build plugin for all Play modules"
 
