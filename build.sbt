@@ -20,9 +20,7 @@ lazy val interplay = (project in file("."))
 
 description := "Base build plugin for all Play modules"
 
-addSbtPlugin("com.github.sbt" % "sbt-release" % sbtReleaseVersion)
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % sbtPgpVersion)
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % sbtCiReleaseVersion)
 
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
