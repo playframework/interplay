@@ -7,10 +7,12 @@ $ exec git config user.name sbt
 $ exec git add .
 $ exec git commit -m commit
 
+$ exec git tag 1.2.3
+
 # Setup remote git repo in target directory
 $ exec git init --bare $PWD/target/remote
 $ exec git remote add origin $PWD/target/remote
-$ exec git push origin main
+$ exec git push origin main --tags
 $ exec git branch -u origin/main
 
 $ exec git status
@@ -29,9 +31,6 @@ $ exec git diff
 
 # Make sure sonatypeRelease ran
 > contains target/sonatype-release-version 1.2.3
-
-# Make sure the version was updated
-> contains version.sbt 1.2.4-SNAPSHOT
 
 # Make sure the git repo was tagged
 $ exec git show 1.2.3
