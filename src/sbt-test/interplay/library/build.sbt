@@ -1,8 +1,11 @@
 lazy val `mock-library` = (project in file("."))
-  .enablePlugins(PlayLibrary && PlayReleaseBase)
+  .enablePlugins(PlayLibrary)
   .settings(common: _*)
 
 ThisBuild / playBuildRepoName := "mock"
+
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
 
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
@@ -17,7 +20,7 @@ InputKey[Unit]("contains") := {
 TaskKey[Unit]("verifyOmnidocSourceUrl") := {
   import java.util.jar.JarFile
 
-  val expected = "https://github.com/playframework/mock/tree/main"
+  val expected = "https://github.com/playframework/mock/tree/1.2.3"
 
   val sourceUrl = omnidocSourceUrl.value
   sourceUrl match {

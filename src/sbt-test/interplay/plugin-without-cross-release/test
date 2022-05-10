@@ -7,20 +7,19 @@ $ exec git config user.name sbt
 $ exec git add .
 $ exec git commit -m commit
 
+$ exec git tag 1.2.3
+
 # Setup remote git repo in target directory
 $ exec git init --bare $PWD/target/remote
 $ exec git remote add origin $PWD/target/remote
-$ exec git push origin main
+$ exec git push origin main --tags
 $ exec git branch -u origin/main
 
 # A reload is necessary because sbt-release uses the initial state of the project to check if a .git folder exists (and errors if that check fails).
 # However, that initial state does not contain the above created .git folder (created via git init) yet.
 > reload
 
-> release with-defaults
-
-# Make sure scripted tests ran
-$ exists target/scripted-ran
+> ci-release
 
 # Make sure publishSigned ran
 > contains target/scala-2.12/sbt-1.0/publish-version sonatype-local-bundle:1.2.3
@@ -30,9 +29,6 @@ $ exists target/scripted-ran
 
 # Make sure sonatypeRelease ran
 > contains target/sonatype-release-version 1.2.3
-
-# Make sure the version was updated
-> contains version.sbt 1.2.4-SNAPSHOT
 
 # Make sure the git repo was tagged
 $ exec git show 1.2.3

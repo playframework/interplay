@@ -24,15 +24,7 @@ If your project is a simple library that gets used in a Play application then en
 
 ### SBT plugins
 
-If your project is an sbt plugin, then enable the `PlaySbtPlugin` plugin on it.  In addition to this, on the root project, you should also configure the scripted task as an extra test, for example:
-
-```scala
-lazy val `my-sbt-plugin` := project in file(".")
-
-playBuildExtraTests := {
-  (scripted in `my-sbt-plugin`).toTask("").value
-}
-```
+If your project is an sbt plugin, then enable the `PlaySbtPlugin` plugin on it.
 
 ### SBT libraries
 
@@ -40,21 +32,11 @@ If your project is not an sbt plugin, but does get used by sbt, then enable the 
 
 ### The root project
 
-If your root project is also a Play library or SBT Plugin, then you should enable the `PlayReleaseBase` plugin in addition to the other plugin.
-
 If you have a root project that is just a meta project that aggregates all your projects together, but itself shouldn't be published, then enable the `PlayRootProject` plugin on it.
 
 ### Aggregating projects
 
 In general, your root project should aggregate all the projects you want to publish.  If it aggregates projects that you don't want to publish, you can make them not published by enabling the `PlayNoPublish` plugin.
-
-In some cases, it's not possible to aggregate all the projects you want to publish, for example, if your project contains both sbt plugins and Play libraries, aggregating the sbt plugins would cause problems with cross building because sbt plugins don't get cross built.  In this case, you need to manually aggregate the `publishSigned` task, by adding it to `playBuildExtraPublish`:
-
-```scala
-playBuildExtraPublish := {
-  (publishSigned in `my-sbt-plugin`).value
-}
-```
 
 ### Play docs
 

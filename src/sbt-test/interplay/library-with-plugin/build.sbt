@@ -1,5 +1,8 @@
 import interplay.ScalaVersions._
 
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
+
 lazy val common: Seq[Setting[_]] = Seq(
   PgpKeys.publishSigned := {
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")
@@ -22,8 +25,6 @@ lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
   .dependsOn(`mock-sbt-library`)
   .settings(
     common,
-    // Pass the file for the scripted test to write to so that we can check that it ran
-    scriptedLaunchOpts += s"-Dscripted-file=${target.value / "scripted-ran"}"
   )
 
 lazy val `mock-sbt-library` = (project in file("mock-sbt-library"))
@@ -33,16 +34,6 @@ lazy val `mock-sbt-library` = (project in file("mock-sbt-library"))
 lazy val `mock-library` = (project in file("mock-library"))
   .enablePlugins(PlayLibrary)
   .settings(common)
-
-playBuildExtraTests := {
-  (`mock-sbt-plugin` / scripted).toTask("").value
-  val _ = (`mock-sbt-library` / Test / test).value
-}
-
-playBuildExtraPublish := {
-  val p = (`mock-sbt-plugin` / PgpKeys.publishSigned).value
-  val l = (`mock-sbt-library` / PgpKeys.publishSigned).value
-}
 
 ThisBuild / playBuildRepoName := "mock"
 

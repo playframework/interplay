@@ -9,6 +9,6 @@ import sbt._
  */
 object PlayRootProjectBase extends AutoPlugin {
   override def trigger = noTrigger
-  override def requires = PlayBuildBase && PlaySonatypeBase && PlayReleaseBase
+  override def requires = PlayBuildBase && PlaySonatypeBase
   override def projectSettings = PlayNoPublishBase.projectSettings
 }

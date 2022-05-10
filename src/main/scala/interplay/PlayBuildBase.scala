@@ -3,10 +3,8 @@ package interplay
 import sbt._
 import sbt.Keys._
 import sbt.plugins.JvmPlugin
-import sbtrelease.ReleasePlugin.autoImport._
 import xerial.sbt.Sonatype
 import com.jsuereth.sbtpgp.SbtPgp
-import com.jsuereth.sbtpgp.PgpKeys
 
 /**
  * Plugin that defines base settings for all Play projects
@@ -16,8 +14,6 @@ object PlayBuildBase extends AutoPlugin {
   override def requires = SbtPgp && JvmPlugin
 
   object autoImport {
-    val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
-    val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
     // This is not using sbt-git because we need a more stable way to set
@@ -71,8 +67,6 @@ object PlayBuildBase extends AutoPlugin {
 
     scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8"),
     javacOptions ++= Seq("-encoding", "UTF-8", "-Xlint:-options"),
-
-    releasePublishArtifactsAction := PgpKeys.publishSigned.value,
 
     resolvers ++= {
       if (isSnapshot.value) {

@@ -4,9 +4,6 @@ import buildinfo.BuildInfo._
 // Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
 ThisBuild / dynverVTagPrefix := false
 
-// We are publishing snapshots to Sonatype
-ThisBuild / dynverSonatypeSnapshots := true
-
 // Sanity-check: assert that version comes from a tag (e.g. not a too-shallow clone)
 // https://github.com/dwijnand/sbt-dynver/#sanity-checking-the-version
 Global / onLoad := (Global / onLoad).value.andThen { s =>
@@ -14,34 +11,12 @@ Global / onLoad := (Global / onLoad).value.andThen { s =>
   s
 }
 
-
 lazy val interplay = (project in file("."))
-  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
-  .settings(
-    Seq(
-      // Release settings
-      releaseProcess := {
-        import ReleaseTransformations._
-        Seq[ReleaseStep](
-          checkSnapshotDependencies,
-          runClean,
-          releaseStepCommandAndRemaining("+test"),
-          releaseStepTask(thisProjectRef.value / playBuildExtraTests),
-          releaseStepCommandAndRemaining("+publishSigned"),
-          // Using `playBuildPromoteSonatype` is obsolete now.
-          // ifDefinedAndTrue(playBuildPromoteSonatype, releaseStepCommand("sonatypeBundleRelease")),
-          releaseStepCommand("sonatypeBundleRelease"),
-          pushChanges
-        )
-      }
-    )
-  )
+  .enablePlugins(PlaySbtPlugin)
 
 description := "Base build plugin for all Play modules"
 
-addSbtPlugin("com.github.sbt" % "sbt-release" % sbtReleaseVersion)
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % sbtPgpVersion)
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % sbtSonatypeVersion)
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % sbtCiReleaseVersion)
 
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
@@ -60,10 +35,6 @@ javacOptions ++= Seq(
   "-Xlint:unchecked",
 )
 
-playBuildExtraTests := {
-  scripted.toTask("").value
-}
-
 // Supply the sbt.version to the scripted tests so
 // that they can be run with either sbt 0.13 or
 // sbt 1.
@@ -75,8 +46,3 @@ scriptedLaunchOpts += {
 ThisBuild / playBuildRepoName := "interplay"
 
 enablePlugins(SbtPlugin)
-
-// Used by CI to check that interplay is working. Note
-// that the scripted tests are cross-built; i.e. they are
-// run for both sbt 0.13 and sbt 1.
-addCommandAlias("validate", ";clean;+test;+scripted;+publishLocal")

@@ -1,18 +1,15 @@
 
 // What an actual project would look like
 lazy val `mock-sbt-plugin` = (project in file("."))
-  .enablePlugins(PlaySbtPlugin && PlayReleaseBase)
+  .enablePlugins(PlaySbtPlugin)
   .settings(
     common,
-    // Pass the file for the scripted test to write to so that we can check that it ran
-    scriptedLaunchOpts += s"-Dscripted-file=${target.value / "scripted-ran"}"
   )
 
-playBuildExtraTests := {
-  (`mock-sbt-plugin` / scripted).toTask("").value
-}
-
 ThisBuild / playBuildRepoName := "mock-without-cross-release"
+
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
 
 // Below this line is for facilitating tests
 
