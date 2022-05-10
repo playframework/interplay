@@ -15,6 +15,10 @@ jobs:
     with:
       java: 11, 8
       scala: 2.12.15
+      env: |
+        BUILD_REASON=IndividualCI
+        PGP_SECRET=foo
+        CI_COMMIT_TAG=foo
       cmd: sbt ++$MATRIX_SCALA "test ; publishLocal ; scripted"
 
   finish:
