@@ -14,8 +14,6 @@ object PlayBuildBase extends AutoPlugin {
   override def requires = SbtPgp && JvmPlugin
 
   object autoImport {
-    val playBuildExtraTests = taskKey[Unit]("Run extra tests during the release")
-    val playBuildExtraPublish = taskKey[Unit]("Publish extract non aggregated projects during the release")
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
     // This is not using sbt-git because we need a more stable way to set

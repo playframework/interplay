@@ -35,10 +35,6 @@ javacOptions ++= Seq(
   "-Xlint:unchecked",
 )
 
-playBuildExtraTests := {
-  scripted.toTask("").value
-}
-
 // Supply the sbt.version to the scripted tests so
 // that they can be run with either sbt 0.13 or
 // sbt 1.

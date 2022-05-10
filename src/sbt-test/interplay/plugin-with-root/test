@@ -19,9 +19,6 @@ $ exec git branch -u origin/main
 
 > ci-release
 
-# Make sure scripted tests ran
-$ exists mock-sbt-plugin/target/scripted-ran
-
 # Make sure publishSigned ran on every project with the right publish settings
 $ exists target/scala-2.13/publish-version
 > contains target/scala-2.13/publish-version no-publish:1.2.3

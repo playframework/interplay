@@ -12,14 +12,6 @@ lazy val `mock-root` = (project in file("."))
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
   .enablePlugins(PlaySbtPlugin)
   .settings(common)
-  .settings(
-    // Pass the file for the scripted test to write to so that we can check that it ran
-    scriptedLaunchOpts += s"-Dscripted-file=${target.value / "scripted-ran"}"
-  )
-
-playBuildExtraTests := {
-  (`mock-sbt-plugin` / scripted).toTask("").value
-}
 
 ThisBuild / playBuildRepoName := "mock"
 

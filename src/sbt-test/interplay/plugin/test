@@ -19,9 +19,6 @@ $ exec git branch -u origin/main
 
 > ci-release
 
-# Make sure scripted tests ran
-$ exists target/scripted-ran
-
 # Make sure publishSigned ran
 > contains target/scala-2.12/sbt-1.0/publish-version sonatype-local-bundle:1.2.3
 

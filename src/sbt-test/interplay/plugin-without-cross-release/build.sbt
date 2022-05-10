@@ -4,13 +4,7 @@ lazy val `mock-sbt-plugin` = (project in file("."))
   .enablePlugins(PlaySbtPlugin)
   .settings(
     common,
-    // Pass the file for the scripted test to write to so that we can check that it ran
-    scriptedLaunchOpts += s"-Dscripted-file=${target.value / "scripted-ran"}"
   )
-
-playBuildExtraTests := {
-  (`mock-sbt-plugin` / scripted).toTask("").value
-}
 
 ThisBuild / playBuildRepoName := "mock-without-cross-release"
 
