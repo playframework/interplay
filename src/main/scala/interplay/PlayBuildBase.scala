@@ -90,20 +90,7 @@ object PlayBuildBase extends AutoPlugin {
       "main"
     },
 
-    pomExtra := {
-      val repoName = (ThisBuild / playBuildRepoName).value
-      <scm>
-        <url>https://github.com/playframework/{repoName}</url>
-        <connection>scm:git:git@github.com:playframework/{repoName}.git</connection>
-      </scm>
-        <developers>
-          <developer>
-            <id>playframework</id>
-            <name>Play Framework Team</name>
-            <url>https://github.com/playframework</url>
-          </developer>
-        </developers>
-    },
+    developers += Developer("playframework", "Play Framework Team", "contact playframework com", url("https://github.com/playframework")),
     pomIncludeRepository := { _ => false }
   )
 }
