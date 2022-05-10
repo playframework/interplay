@@ -14,6 +14,9 @@ playBuildExtraTests := {
 
 ThisBuild / playBuildRepoName := "mock-without-cross-release"
 
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
+
 // Below this line is for facilitating tests
 
 InputKey[Unit]("contains") := {

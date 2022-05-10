@@ -7,6 +7,10 @@ lazy val `mock-sbt-plugin` = (project in file("."))
     scriptedLaunchOpts += s"-Dscripted-file=${target.value / "scripted-ran"}"
   )
 
+
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
+
 playBuildExtraTests := {
   (`mock-sbt-plugin` / scripted).toTask("").value
 }

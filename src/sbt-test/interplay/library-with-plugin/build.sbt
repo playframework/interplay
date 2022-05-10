@@ -1,5 +1,8 @@
 import interplay.ScalaVersions._
 
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
+
 lazy val common: Seq[Setting[_]] = Seq(
   PgpKeys.publishSigned := {
     IO.write(crossTarget.value / "publish-version", s"${publishTo.value.get.name}:${version.value}")

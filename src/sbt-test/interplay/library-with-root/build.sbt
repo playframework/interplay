@@ -15,6 +15,9 @@ lazy val `mock-library` = (project in file("mock-library"))
 
 ThisBuild / playBuildRepoName := "mock"
 
+// Customise sbt-dynver's behaviour to make it work with tags which aren't v-prefixed
+(ThisBuild / dynverVTagPrefix) := false
+
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed
