@@ -26,7 +26,7 @@ $ exists target/scala-2.13/publish-version
 > contains target/scala-2.13/publish-version no-publish:1.2.3
 > contains mock-sbt-plugin/target/scala-2.12/sbt-1.0/publish-version sonatype-local-bundle:1.2.3
 
-# Make sure bintrayRelease ran only in the root project
+# Make sure sonatypeBundleRelease ran only in the root project
 > contains target/sonatype-release-version 1.2.3
 -$ exists mock-sbt-plugin/target/sonatype-release-version
 
