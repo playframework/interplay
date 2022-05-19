@@ -16,15 +16,6 @@ object PlayBuildBase extends AutoPlugin {
   object autoImport {
     val playBuildRepoName = settingKey[String]("The name of the repository in the playframework GitHub organization")
 
-    // This is not using sbt-git because we need a more stable way to set
-    // the current branch in a more stable way, for example, we may want to
-    // get the current branch as "main" even if we are at a detached commit.
-    //
-    // This is useful when running tasks on Travis, where the builds runs in
-    // a detached commit. See the discussion here:
-    // https://github.com/travis-ci/travis-ci/issues/1701
-    val playCurrentBranch = settingKey[String]("The current branch for the project")
-
     /**
      * Plugins configuration for a Play sbt plugin.
      */
@@ -74,20 +65,6 @@ object PlayBuildBase extends AutoPlugin {
       } else {
         Nil
       }
-    },
-
-    // Tries to automatically set playCurrentBranch setting by reading
-    // an environment variable or system property.
-    //
-    // Reading from a environment variable could be useful when running
-    // in CI which have this automatically configured, for example Travis:
-    // https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
-    playCurrentBranch := {
-      sys.env.get("CURRENT_BRANCH")
-    } orElse {
-      sys.props.get("currentBranch")
-    } getOrElse {
-      "main"
     },
 
     developers += Developer("playframework", "Play Framework Team", "contact playframework com", url("https://github.com/playframework")),
