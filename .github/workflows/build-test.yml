@@ -18,7 +18,7 @@ jobs:
     uses: playframework/.github/.github/workflows/cmd.yml@v2
     with:
       java: 11, 8
-      scala: 2.12.16
+      scala: 2.13.8
       env: |
         BUILD_REASON=IndividualCI
         PGP_SECRET=foo
