@@ -12,7 +12,7 @@ private[interplay] object PlaySbtBuildBase extends AutoPlugin {
     scalaVersion := ScalaVersions.scala212,
     crossScalaVersions := Seq(ScalaVersions.scala212),
     pluginCrossBuild / sbtVersion := SbtVersions.sbt17,
-    compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
-    doc / javacOptions := Seq("-source", "1.8")
+    compile / javacOptions ++= Seq("--release", "11"),
+    doc / javacOptions := Seq("-source", "11")
   )
 }
