@@ -21,7 +21,7 @@ addSbtPlugin("com.github.sbt" % "sbt-ci-release" % sbtCiReleaseVersion)
 libraryDependencies += "com.typesafe" % "config" % configVersion
 
 scalacOptions ++= Seq(
-  "-target:jvm-1.8",
+  "-release:11",
   "-Xlint",
   "-Ywarn-unused:imports",
   "-Xlint:nullary-unit",
@@ -29,8 +29,7 @@ scalacOptions ++= Seq(
 )
 
 javacOptions ++= Seq(
-  "-source", "1.8",
-  "-target", "1.8",
+  "--release", "11",
   "-Xlint:deprecation",
   "-Xlint:unchecked",
 )

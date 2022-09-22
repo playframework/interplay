@@ -22,8 +22,8 @@ import interplay.Omnidoc.autoImport.omnidocTagPrefix
   override def projectSettings = Seq(
     omnidocGithubRepo := s"playframework/${(ThisBuild / playBuildRepoName).value}",
     omnidocTagPrefix := "",
-    compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
-    doc / javacOptions := Seq("-source", "1.8"),
+    compile / javacOptions ++= Seq("--release", "11"),
+    doc / javacOptions := Seq("-source", "11"),
     crossScalaVersions := Seq(scalaVersion.value), // TODO: Add ScalaVersions.scala3
     scalaVersion := sys.props.get("scala.version").getOrElse(ScalaVersions.scala213),
   )
