@@ -61,7 +61,7 @@ object PlayBuildBase extends AutoPlugin {
 
     resolvers ++= {
       if (isSnapshot.value) {
-        Seq(Opts.resolver.sonatypeSnapshots)
+        Opts.resolver.sonatypeOssSnapshots
       } else {
         Nil
       }
