@@ -360,7 +360,7 @@ object PlaySonatypeBase extends AutoPlugin {
   override def requires = Sonatype
 
   override def projectSettings = Seq(
-    sonatypeProfileName := "com.typesafe",
+    sonatypeProfileName := "com.typesafe.play",
     publishTo := sonatypePublishToBundle.value,
   )
 }
