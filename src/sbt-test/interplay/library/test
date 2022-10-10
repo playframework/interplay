@@ -1,9 +1,6 @@
 # Setup local git repo
 $ exec git init
 $ exec git checkout -b main
-# Need to configure name/email since on build server it's not set
-$ exec git config user.email sbt@example.com
-$ exec git config user.name sbt
 $ exec git add .
 $ exec git commit -m commit
 
