@@ -53,3 +53,7 @@ In general, your root project should aggregate all the projects you want to publ
 ### Play docs
 
 If your project includes documentation that you want included in the main Play documentation, you can allow this by adding the `Playdoc` plugin to it.  In that case you also will need to configure the `playdocDirectory` to point to the documentation directory.
+
+## Releasing a new version
+
+See https://github.com/playframework/.github/blob/main/RELEASING.md
