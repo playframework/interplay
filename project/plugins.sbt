@@ -5,7 +5,7 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.2"
 )
 
-addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.10")
+addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.11")
 
 lazy val build = (project in file(".")).
   enablePlugins(BuildInfoPlugin).
