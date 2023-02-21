@@ -25,7 +25,7 @@ import sbt.librarymanagement.{ SemanticSelector, VersionNumber }
     omnidocTagPrefix := "",
     compile / javacOptions ++= Seq("--release", "11"),
     doc / javacOptions := Seq("-source", "11"),
-    crossScalaVersions := Seq(scalaVersion.value), // TODO: Add ScalaVersions.scala3
+    crossScalaVersions := Seq(scalaVersion.value, ScalaVersions.scala3),
     scalaVersion := (Seq(ScalaVersions.scala213, ScalaVersions.scala3)
       .filter(v => SemanticSelector(sys.props.get("scala.version").getOrElse(ScalaVersions.scala213)).matches(VersionNumber(v))) match {
         case Nil => sys.error("Unable to detect scalaVersion!")
