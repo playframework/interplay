@@ -53,6 +53,8 @@ object PlayBuildBase extends AutoPlugin {
   override def projectSettings = Seq(
     // General settings
     organization := "com.typesafe.play",
+    organizationName := "The Play Framework Project",
+    organizationHomepage := Some(url("https://playframework.com")),
     homepage := Some(url(s"https://github.com/playframework/${(ThisBuild / playBuildRepoName).value}")),
     licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
 
@@ -71,7 +73,7 @@ object PlayBuildBase extends AutoPlugin {
       }
     },
 
-    developers += Developer("playframework", "Play Framework Team", "contact@playframework.com", url("https://github.com/playframework")),
+    developers += Developer("playframework", "The Play Framework Contributors", "contact@playframework.com", url("https://github.com/playframework")),
     pomIncludeRepository := { _ => false }
   )
 }
