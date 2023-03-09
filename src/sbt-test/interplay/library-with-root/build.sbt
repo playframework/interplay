@@ -6,7 +6,7 @@ lazy val `mock-root` = (project in file("."))
   .aggregate(`mock-library`)
   .settings(
     common,
-    crossScalaVersions := Seq(scala212, scala213)
+    crossScalaVersions := Seq(scala212, scala213, scala3)
   )
 
 lazy val `mock-library` = (project in file("mock-library"))
@@ -21,10 +21,11 @@ ThisBuild / playBuildRepoName := "mock"
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed
-  val contents = IO.read(file(args.head))
+  val filename = args.head.replace("target/SCALA3/", s"target/scala-${crossScalaVersions.value.find(_.startsWith("3.")).getOrElse("")}/")
+  val contents = IO.read(file(filename))
   val expected = args.tail.mkString(" ")
   if (!contents.contains(expected)) {
-    throw sys.error(s"File ${args.head} does not contain '$expected':\n$contents")
+    throw sys.error(s"File ${filename} does not contain '$expected':\n$contents")
   }
 }
 

@@ -6,7 +6,7 @@ lazy val `mock-root` = (project in file("."))
   .aggregate(`mock-sbt-plugin`)
   .settings(
     common,
-    crossScalaVersions := Seq(scala212, scala213)
+    crossScalaVersions := Seq(scala212, scala213, scala3)
   )
 
 lazy val `mock-sbt-plugin` = (project in file("mock-sbt-plugin"))
@@ -21,7 +21,7 @@ ThisBuild / playBuildRepoName := "mock"
 // Below this line is for facilitating tests
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed
-  val filename = args.head
+  val filename = args.head.replace("target/SCALA3/", s"target/scala-${crossScalaVersions.value.find(_.startsWith("3.")).getOrElse("")}/")
   val expected = args.tail.mkString(" ")
   val contents: String = IO.read(file(filename))
   if (contents.contains(expected)) {
