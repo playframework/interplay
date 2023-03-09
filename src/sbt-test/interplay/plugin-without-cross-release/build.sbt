@@ -15,7 +15,7 @@ ThisBuild / playBuildRepoName := "mock-without-cross-release"
 
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed
-  val filename = args.head
+  val filename = args.head.replace("target/SCALA3/", s"target/scala-${crossScalaVersions.value.find(_.startsWith("3.")).getOrElse("")}/")
   val expected = args.tail.mkString(" ")
   val contents: String = IO.read(file(filename))
   if (contents.contains(expected)) {
