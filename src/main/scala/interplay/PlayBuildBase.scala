@@ -71,7 +71,7 @@ object PlayBuildBase extends AutoPlugin {
       }
     },
 
-    developers += Developer("playframework", "Play Framework Team", "contact playframework com", url("https://github.com/playframework")),
+    developers += Developer("playframework", "Play Framework Team", "contact@playframework.com", url("https://github.com/playframework")),
     pomIncludeRepository := { _ => false }
   )
 }
