@@ -21,7 +21,7 @@ jobs:
       scala: 2.12.x
       env: |
         BUILD_REASON=IndividualCI
-        PGP_SECRET=Zm9v # "foo" base64 encoded
+        PGP_SECRET=Zm9v
         CI_COMMIT_TAG=foo
       cmd: sbt ++$MATRIX_SCALA "test ; publishLocal ; scripted"
 
