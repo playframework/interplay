@@ -60,7 +60,7 @@ object PlayBuildBase extends AutoPlugin {
 
     scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-encoding", "utf8") ++
       (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 13)) => Seq("-Xsource:3")
+        case Some((2, 13)) => Seq("-Xsource:3", "-Xmigration")
         case _ => Seq.empty
       }),
     javacOptions ++= Seq("-encoding", "UTF-8", "-Xlint:-options"),
