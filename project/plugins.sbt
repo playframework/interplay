@@ -2,7 +2,7 @@ import java.util.Locale
 
 libraryDependencies ++= Seq(
   "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value,
-  "com.typesafe" % "config" % "1.4.2"
+  "com.typesafe" % "config" % "1.4.3"
 )
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.12")
